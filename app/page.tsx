@@ -1,65 +1,80 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
+
+export default function WelcomePage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) router.replace('/dashboard');
+    });
+  }, [router]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-background flex flex-col">
+      <div className="flex-1 max-w-lg mx-auto w-full px-6 pb-10 pt-20">
+
+        {/* Wordmark */}
+        <div className="flex flex-col items-center mb-12">
+          <Image src="/logo.png" alt="The Common Room" width={260} height={55} priority />
+          <p className="text-subtext text-center text-base mt-4 leading-relaxed">
+            A space for reflection, clarity, and purpose
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* AI Disclaimer */}
+        <div className="rounded-2xl p-5 mb-10" style={{ backgroundColor: '#E8EFF1' }}>
+          <p className="text-primary text-sm font-semibold mb-2">A note about this app</p>
+          <p className="text-ink text-sm leading-relaxed">
+            The Common Room uses AI to generate personalised Points of Reflection based on the
+            themes you choose. These are offered as prompts for your own thinking — not advice,
+            diagnosis, or instruction.
+            <br /><br />
+            You are always the expert on your own life.
+          </p>
         </div>
-      </main>
+
+        {/* About */}
+        <div className="rounded-2xl p-5 mb-10" style={{ backgroundColor: '#FDF6E3' }}>
+          <p className="text-primary text-sm font-semibold mb-2">About this app</p>
+          <p className="text-ink text-sm leading-relaxed">
+            This app is a companion to the in-person Common Room workshops and The Purpose
+            Workbook. It is designed to help members reflect on what matters most, record their
+            selected purpose themes, and revisit their personal points of reflection between
+            sessions.
+            <br /><br />
+            Please use this app only if you have attended at least one in-person workshop at a
+            Common Room hub. It is not intended to replace the hosted workshop experience,
+            facilitated conversations, peer support or workbook journey.
+            <br /><br />
+            If your local authority, organisation or community is interested in creating a Common
+            Room, please email:{' '}
+            <span className="font-semibold">contact@lifework-lab.com</span>
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col gap-3">
+          <Link
+            href="/register"
+            className="flex items-center justify-center rounded-2xl bg-primary text-white text-base font-semibold min-h-[52px] hover:opacity-90 transition-opacity"
+          >
+            Get Started
+          </Link>
+          <Link
+            href="/sign-in"
+            className="flex items-center justify-center rounded-2xl text-primary text-base min-h-[52px] border-[1.5px] border-primary/25 hover:bg-primary/5 transition-colors"
+          >
+            I already have an account
+          </Link>
+        </div>
+
+      </div>
     </div>
   );
 }
