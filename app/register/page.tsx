@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { Colors } from '@/constants/theme';
 
 const GENDER_OPTIONS = ['Woman', 'Man', 'Non-binary', 'Prefer not to say'];
 
@@ -129,7 +131,7 @@ export default function RegisterPage() {
         <h1 className="font-georgia text-primary text-3xl xl:text-4xl leading-tight mb-2">Create your account</h1>
         <p className="text-subtext text-base mb-8">Just a few details to get you started</p>
 
-        <form onSubmit={handleRegister} className="flex flex-col gap-5">
+        <form onSubmit={handleRegister} className="flex flex-col gap-5 max-w-md">
 
           <Field label="Full name">
             <input
@@ -221,17 +223,16 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center justify-center min-h-[52px] rounded-2xl bg-primary text-white text-base font-semibold hover:opacity-90 transition-opacity disabled:opacity-70"
+            className="flex items-center justify-center h-12 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-70"
           >
             {loading ? 'Creating account…' : 'Create Account'}
           </button>
         </form>
 
-        <div className="flex justify-center mt-4">
-          <Link href="/sign-in" className="text-subtext text-sm hover:text-primary transition-colors">
-            Already have an account? <span className="text-primary">Sign in</span>
-          </Link>
-        </div>
+        <p className="text-subtext text-sm mt-5 max-w-md">
+          Already have an account?{' '}
+          <Link href="/sign-in" className="text-primary hover:opacity-70 transition-opacity">Sign in</Link>
+        </p>
 
       </div>
     </div>
