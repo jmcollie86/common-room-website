@@ -131,7 +131,7 @@ export default function AdminThemesPage() {
             style={{
               backgroundColor: activeCategory === cat ? Colors.primary : 'white',
               borderColor: activeCategory === cat ? Colors.primary : Colors.secondary,
-              color: activeCategory === cat ? 'white' : Colors.ink,
+              color: activeCategory === cat ? 'white' : Colors.text,
               fontWeight: activeCategory === cat ? 600 : 400,
             }}
           >
