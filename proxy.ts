@@ -3,7 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 
 const PUBLIC_PATHS = new Set(['/', '/sign-in', '/register']);
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Pass through public pages and Next.js internals
