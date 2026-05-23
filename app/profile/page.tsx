@@ -82,10 +82,7 @@ export default function ProfilePage() {
 
 function Row({ label, value, last }: { label: string; value: string; last?: boolean }) {
   return (
-    <div
-      className="flex items-center px-6 py-4"
-      style={last ? {} : undefined} className="b-b"
-    >
+    <div className={`flex items-center px-6 py-4 ${last ? '' : 'b-b'}`}>
       <p className="text-xs font-medium text-subtext uppercase tracking-wider w-36 shrink-0">{label}</p>
       <p className="text-base text-ink">{value}</p>
     </div>
