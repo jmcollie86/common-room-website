@@ -56,3 +56,11 @@ body {
 .font-georgia {
   font-family: Georgia, 'Times New Roman', serif;
 }
+
+/* #AEC6CF (secondary) at various opacities — avoids React 19 shorthand hydration mismatch */
+.b-card     { border:        1px solid rgba(174, 198, 207, 0.25); } /* 40 hex */
+.b-card-md  { border:        1px solid rgba(174, 198, 207, 0.31); } /* 50 hex */
+.b-r        { border-right:  1px solid rgba(174, 198, 207, 0.25); } /* 40 hex */
+.b-b        { border-bottom: 1px solid rgba(174, 198, 207, 0.25); } /* 40 hex */
+.b-b-sm     { border-bottom: 1px solid rgba(174, 198, 207, 0.19); } /* 30 hex */
+.b-t-sm     { border-top:    1px solid rgba(174, 198, 207, 0.19); } /* 30 hex */

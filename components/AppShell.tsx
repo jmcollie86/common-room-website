@@ -36,7 +36,7 @@ export function AppShell({ active, children }: AppShellProps) {
   const sidebarContent = (
     <>
       {/* Logo */}
-      <div className="px-6 py-6 flex items-center justify-between" style={{ borderBottom: `1px solid ${Colors.secondary}30` }}>
+      <div className="px-6 py-6 flex items-center justify-between b-b-sm">
         <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
           <Image src="/logo.png" alt="The Common Room" width={160} height={34} priority />
         </Link>
