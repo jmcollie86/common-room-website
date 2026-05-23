@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { Colors } from '@/constants/theme';
 
 export default function SignInPage() {
   const router = useRouter();
@@ -33,17 +35,41 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <div className="flex-1 max-w-lg mx-auto w-full px-6 pb-10 pt-16">
+    <div className="min-h-screen bg-background flex">
 
-        <Link href="/" className="inline-flex items-center text-primary text-base min-h-[44px] mb-8 hover:opacity-70 transition-opacity">
+      {/* Left brand panel */}
+      <div
+        className="hidden lg:flex flex-col justify-between w-[45%] xl:w-[40%] min-h-screen p-12 xl:p-16"
+        style={{ backgroundColor: Colors.primary }}
+      >
+        <Link href="/">
+          <Image src="/logo.png" alt="The Common Room" width={200} height={43} priority
+            style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }}
+          />
+        </Link>
+        <p className="text-white/70 text-xl font-georgia leading-relaxed">
+          A space for reflection,<br />clarity, and purpose.
+        </p>
+        <p className="text-white/30 text-xs">contact@lifework-lab.com</p>
+      </div>
+
+      {/* Right form panel */}
+      <div className="flex-1 flex flex-col justify-center px-8 sm:px-16 xl:px-24 py-12">
+
+        <div className="lg:hidden mb-10">
+          <Link href="/">
+            <Image src="/logo.png" alt="The Common Room" width={180} height={38} priority />
+          </Link>
+        </div>
+
+        <Link href="/" className="text-primary text-sm mb-8 inline-flex items-center gap-1 hover:opacity-70 transition-opacity">
           ← Back
         </Link>
 
-        <h1 className="font-georgia text-primary text-[30px] leading-[38px] mb-2">Welcome back</h1>
-        <p className="text-subtext text-base mb-9">Sign in to continue your reflection</p>
+        <h1 className="font-georgia text-primary text-3xl xl:text-4xl leading-tight mb-2">Welcome back</h1>
+        <p className="text-subtext text-base mb-8">Sign in to continue your reflection</p>
 
-        <form onSubmit={handleSignIn} className="flex flex-col gap-4">
+        <form onSubmit={handleSignIn} className="flex flex-col gap-4 max-w-md">
           <div>
             <label className="block text-sm font-medium text-ink mb-2">Email</label>
             <input
@@ -52,10 +78,9 @@ export default function SignInPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
               autoComplete="email"
-              className="w-full min-h-[52px] bg-white border-[1.5px] border-secondary rounded-xl px-4 text-base text-ink placeholder:text-subtext focus:outline-none focus:border-primary transition-colors"
+              className={inputClass}
             />
           </div>
-
           <div>
             <label className="block text-sm font-medium text-ink mb-2">Password</label>
             <input
@@ -64,7 +89,7 @@ export default function SignInPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Your password"
               autoComplete="current-password"
-              className="w-full min-h-[52px] bg-white border-[1.5px] border-secondary rounded-xl px-4 text-base text-ink placeholder:text-subtext focus:outline-none focus:border-primary transition-colors"
+              className={inputClass}
             />
           </div>
 
@@ -73,19 +98,20 @@ export default function SignInPage() {
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center justify-center min-h-[52px] mt-4 rounded-2xl bg-primary text-white text-base font-semibold hover:opacity-90 transition-opacity disabled:opacity-70"
+            className="flex items-center justify-center h-12 mt-2 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-70"
           >
             {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
 
-        <div className="flex justify-center mt-5">
-          <Link href="/register" className="text-subtext text-sm hover:text-primary transition-colors">
-            Don&apos;t have an account? <span className="text-primary">Get started</span>
-          </Link>
-        </div>
-
+        <p className="text-subtext text-sm mt-6 max-w-md">
+          Don&apos;t have an account?{' '}
+          <Link href="/register" className="text-primary hover:opacity-70 transition-opacity">Get started</Link>
+        </p>
       </div>
     </div>
   );
 }
+
+const inputClass =
+  'w-full h-12 bg-white border-[1.5px] border-secondary rounded-xl px-4 text-sm text-ink placeholder:text-subtext focus:outline-none focus:border-primary transition-colors';

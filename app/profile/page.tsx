@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Colors } from '@/constants/theme';
+import { AppShell } from '@/components/AppShell';
 
 type Profile = {
   full_name: string | null;
@@ -43,17 +43,11 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <div className="max-w-lg mx-auto w-full px-6 pb-10">
+    <AppShell active="dashboard">
+      <div className="max-w-2xl mx-auto px-8 py-10">
 
-        <div className="flex items-center pt-4 mb-9">
-          <Link href="/dashboard" className="inline-flex items-center min-h-[44px] text-primary text-base hover:opacity-70 transition-opacity">
-            ← Back
-          </Link>
-        </div>
-
-        <h1 className="font-georgia text-primary text-[28px] leading-[36px] mb-2">My Profile</h1>
-        <p className="text-subtext text-sm mb-9">Your account details</p>
+        <h1 className="font-georgia text-primary text-4xl leading-tight mb-2">My Profile</h1>
+        <p className="text-subtext text-sm mb-10">Your account details</p>
 
         {loading ? (
           <div className="flex justify-center pt-10">
@@ -61,35 +55,41 @@ export default function ProfilePage() {
           </div>
         ) : (
           <>
-            <Row label="Name" value={profile?.full_name ?? '—'} />
-            <Row label="Email" value={email} />
-            <Row label="Gender" value={profile?.gender ?? '—'} />
-            <Row label="Year of birth" value={profile?.year_of_birth?.toString() ?? '—'} />
-            <Row label="Home postcode" value={profile?.home_postcode ?? '—'} />
-
-            <div className="my-8 h-px" style={{ backgroundColor: Colors.secondary + '60' }} />
+            <div
+              className="rounded-2xl bg-white overflow-hidden mb-8"
+              style={{ border: `1px solid ${Colors.secondary}50` }}
+            >
+              <Row label="Name" value={profile?.full_name ?? '—'} />
+              <Row label="Email" value={email} />
+              <Row label="Gender" value={profile?.gender ?? '—'} />
+              <Row label="Year of birth" value={profile?.year_of_birth?.toString() ?? '—'} />
+              <Row label="Home postcode" value={profile?.home_postcode ?? '—'} last />
+            </div>
 
             <button
               onClick={handleSignOut}
               disabled={signingOut}
-              className="w-full flex items-center justify-center min-h-[52px] rounded-xl border-[1.5px] text-base font-semibold transition-opacity disabled:opacity-60 hover:opacity-80"
+              className="flex items-center justify-center h-11 px-8 rounded-xl border-[1.5px] text-sm font-semibold transition-opacity disabled:opacity-60 hover:opacity-80"
               style={{ borderColor: Colors.error, color: Colors.error }}
             >
               {signingOut ? (
-                <span className="w-5 h-5 border-2 border-error border-t-transparent rounded-full animate-spin" />
+                <span className="w-4 h-4 border-2 border-error border-t-transparent rounded-full animate-spin" />
               ) : 'Sign Out'}
             </button>
           </>
         )}
       </div>
-    </div>
+    </AppShell>
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({ label, value, last }: { label: string; value: string; last?: boolean }) {
   return (
-    <div className="py-4 border-b" style={{ borderColor: Colors.secondary + '50' }}>
-      <p className="text-xs font-medium text-subtext uppercase tracking-wider mb-1">{label}</p>
+    <div
+      className="flex items-center px-6 py-4"
+      style={last ? {} : { borderBottom: `1px solid ${Colors.secondary}40` }}
+    >
+      <p className="text-xs font-medium text-subtext uppercase tracking-wider w-36 shrink-0">{label}</p>
       <p className="text-base text-ink">{value}</p>
     </div>
   );

@@ -95,14 +95,38 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <div className="flex-1 max-w-lg mx-auto w-full px-6 pb-12 pt-16">
+    <div className="min-h-screen bg-background flex">
 
-        <Link href="/" className="inline-flex items-center text-primary text-base min-h-[44px] mb-7 hover:opacity-70 transition-opacity">
+      {/* Left brand panel */}
+      <div
+        className="hidden lg:flex flex-col justify-between w-[45%] xl:w-[40%] min-h-screen p-12 xl:p-16 shrink-0"
+        style={{ backgroundColor: Colors.primary }}
+      >
+        <Link href="/">
+          <Image src="/logo.png" alt="The Common Room" width={200} height={43} priority
+            style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }}
+          />
+        </Link>
+        <p className="text-white/70 text-xl font-georgia leading-relaxed">
+          A space for reflection,<br />clarity, and purpose.
+        </p>
+        <p className="text-white/30 text-xs">contact@lifework-lab.com</p>
+      </div>
+
+      {/* Right form panel */}
+      <div className="flex-1 overflow-y-auto px-8 sm:px-16 xl:px-24 py-12">
+
+        <div className="lg:hidden mb-10">
+          <Link href="/">
+            <Image src="/logo.png" alt="The Common Room" width={180} height={38} priority />
+          </Link>
+        </div>
+
+        <Link href="/" className="text-primary text-sm mb-8 inline-flex items-center gap-1 hover:opacity-70 transition-opacity">
           ← Back
         </Link>
 
-        <h1 className="font-georgia text-primary text-[30px] leading-[38px] mb-2">Create your account</h1>
+        <h1 className="font-georgia text-primary text-3xl xl:text-4xl leading-tight mb-2">Create your account</h1>
         <p className="text-subtext text-base mb-8">Just a few details to get you started</p>
 
         <form onSubmit={handleRegister} className="flex flex-col gap-5">
