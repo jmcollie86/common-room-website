@@ -220,10 +220,7 @@ export default function NotesPage() {
         </div>
 
         {/* Writing area */}
-        <div
-          className="mt-6 rounded-2xl bg-white p-6 min-h-[400px]"
-          className="b-card-md"
-        >
+        <div className="mt-6 rounded-2xl bg-white p-6 min-h-[400px] b-card-md">
           <textarea
             value={content}
             onChange={(e) => handleChange(e.target.value)}
