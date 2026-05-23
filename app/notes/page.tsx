@@ -222,7 +222,7 @@ export default function NotesPage() {
         {/* Writing area */}
         <div
           className="mt-6 rounded-2xl bg-white p-6 min-h-[400px]"
-          style={{ border: `1px solid ${Colors.secondary}50` }}
+          className="b-card-md"
         >
           <textarea
             value={content}

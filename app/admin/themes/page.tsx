@@ -65,7 +65,7 @@ export default function AdminThemesPage() {
 
       {/* Category distribution donut */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-2xl p-6" style={{ border: `1px solid ${Colors.secondary}40` }}>
+        <div className="bg-white rounded-2xl p-6 b-card">
           <p className="text-sm font-semibold text-ink mb-1">Selections by category</p>
           <p className="text-xs text-subtext mb-4">Total selections per ADOPT category</p>
           <ResponsiveContainer width="100%" height={260}>
@@ -97,7 +97,7 @@ export default function AdminThemesPage() {
         </div>
 
         {/* Category stats table */}
-        <div className="bg-white rounded-2xl p-6" style={{ border: `1px solid ${Colors.secondary}40` }}>
+        <div className="bg-white rounded-2xl p-6 b-card">
           <p className="text-sm font-semibold text-ink mb-4">Category breakdown</p>
           <div className="flex flex-col gap-3">
             {[...categories].sort((a, b) => b.total - a.total).map((cat) => {
@@ -141,7 +141,7 @@ export default function AdminThemesPage() {
       </div>
 
       {/* Themes bar chart */}
-      <div className="bg-white rounded-2xl p-6" style={{ border: `1px solid ${Colors.secondary}40` }}>
+      <div className="bg-white rounded-2xl p-6 b-card">
         <p className="text-sm font-semibold text-ink mb-1">Theme popularity</p>
         <p className="text-xs text-subtext mb-5">Number of users who selected each theme</p>
         <ResponsiveContainer width="100%" height={Math.max(300, filtered.length * 36)}>

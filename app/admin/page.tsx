@@ -19,7 +19,7 @@ type Stats = {
 
 function StatCard({ label, value, sub }: { label: string; value: number | string; sub?: string }) {
   return (
-    <div className="bg-white rounded-2xl px-6 py-5" style={{ border: `1px solid ${Colors.secondary}40` }}>
+    <div className="bg-white rounded-2xl px-6 py-5 b-card">
       <p className="text-xs font-semibold text-subtext uppercase tracking-wider mb-1">{label}</p>
       <p className="font-georgia text-3xl text-primary">{value}</p>
       {sub && <p className="text-xs text-subtext mt-1">{sub}</p>}
@@ -86,7 +86,7 @@ export default function AdminOverviewPage() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
         {/* Registrations over time */}
-        <div className="bg-white rounded-2xl p-6" style={{ border: `1px solid ${Colors.secondary}40` }}>
+        <div className="bg-white rounded-2xl p-6 b-card">
           <p className="text-sm font-semibold text-ink mb-1">User registrations</p>
           <p className="text-xs text-subtext mb-5">Last 30 days</p>
           <ResponsiveContainer width="100%" height={220}>
@@ -130,7 +130,7 @@ export default function AdminOverviewPage() {
         </div>
 
         {/* Engagement snapshot */}
-        <div className="bg-white rounded-2xl p-6" style={{ border: `1px solid ${Colors.secondary}40` }}>
+        <div className="bg-white rounded-2xl p-6 b-card">
           <p className="text-sm font-semibold text-ink mb-1">Engagement snapshot</p>
           <p className="text-xs text-subtext mb-5">Across all users</p>
           <ResponsiveContainer width="100%" height={220}>

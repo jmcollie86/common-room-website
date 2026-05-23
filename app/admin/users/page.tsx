@@ -101,14 +101,11 @@ export default function AdminUsersPage() {
           <div className="w-7 h-7 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
-        <div
-          className="bg-white rounded-2xl overflow-hidden"
-          style={{ border: `1px solid ${Colors.secondary}40` }}
-        >
+        <div className="bg-white rounded-2xl overflow-hidden b-card">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead style={{ backgroundColor: Colors.background }}>
-                <tr style={{ borderBottom: `1px solid ${Colors.secondary}40` }}>
+                <tr className="b-b">
                   <SortHeader label="Name" k="full_name" />
                   <SortHeader label="Email" k="email" />
                   <SortHeader label="Gender" k="gender" />
@@ -125,10 +122,7 @@ export default function AdminUsersPage() {
                 {filtered.map((u, i) => (
                   <tr
                     key={u.id}
-                    style={{
-                      borderBottom: i < filtered.length - 1 ? `1px solid ${Colors.secondary}25` : 'none',
-                    }}
-                    className="hover:bg-background/60 transition-colors"
+                    className={`hover:bg-background/60 transition-colors ${i < filtered.length - 1 ? 'b-b' : ''}`}
                   >
                     <td className="px-4 py-3 text-sm text-ink font-medium whitespace-nowrap">{u.full_name ?? '—'}</td>
                     <td className="px-4 py-3 text-sm text-subtext whitespace-nowrap">{u.email}</td>

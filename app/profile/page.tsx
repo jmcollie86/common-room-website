@@ -55,10 +55,7 @@ export default function ProfilePage() {
           </div>
         ) : (
           <>
-            <div
-              className="rounded-2xl bg-white overflow-hidden mb-8"
-              style={{ border: `1px solid ${Colors.secondary}50` }}
-            >
+            <div className="rounded-2xl bg-white overflow-hidden mb-8 b-card-md">
               <Row label="Name" value={profile?.full_name ?? '—'} />
               <Row label="Email" value={email} />
               <Row label="Gender" value={profile?.gender ?? '—'} />
@@ -87,7 +84,7 @@ function Row({ label, value, last }: { label: string; value: string; last?: bool
   return (
     <div
       className="flex items-center px-6 py-4"
-      style={last ? {} : { borderBottom: `1px solid ${Colors.secondary}40` }}
+      style={last ? {} : undefined} className="b-b"
     >
       <p className="text-xs font-medium text-subtext uppercase tracking-wider w-36 shrink-0">{label}</p>
       <p className="text-base text-ink">{value}</p>

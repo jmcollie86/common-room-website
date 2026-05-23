@@ -80,7 +80,7 @@ export default function AdminExportPage() {
       </p>
 
       {/* Date range */}
-      <section className="bg-white rounded-2xl p-6 mb-6" style={{ border: `1px solid ${Colors.secondary}40` }}>
+      <section className="bg-white rounded-2xl p-6 mb-6 b-card">
         <p className="text-sm font-semibold text-ink mb-4">Date range</p>
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
@@ -127,7 +127,7 @@ export default function AdminExportPage() {
       </section>
 
       {/* Data type selection */}
-      <section className="bg-white rounded-2xl p-6 mb-6" style={{ border: `1px solid ${Colors.secondary}40` }}>
+      <section className="bg-white rounded-2xl p-6 mb-6 b-card">
         <div className="flex items-center justify-between mb-4">
           <p className="text-sm font-semibold text-ink">Data to export</p>
           <button
