@@ -17,6 +17,8 @@ function toCSV(rows: Record<string, unknown>[]): string {
   ].join('\n');
 }
 
+const EXPORT_LIMIT = 5000;
+
 export async function GET(req: NextRequest) {
   const guard = await requireAdmin();
   if (!guard.ok) return guard.response;
@@ -34,7 +36,8 @@ export async function GET(req: NextRequest) {
     let q = admin
       .from('profiles')
       .select('id, full_name, gender, year_of_birth, home_postcode, created_at, is_admin')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(EXPORT_LIMIT);
     if (from) q = q.gte('created_at', from);
     if (to) q = q.lte('created_at', to + 'T23:59:59Z');
     const { data } = await q;
@@ -61,13 +64,15 @@ export async function GET(req: NextRequest) {
     let q = admin
       .from('user_adopt_selections')
       .select('id, user_id, theme_id, selected_at, adopt_themes(theme, category)')
-      .order('selected_at', { ascending: false });
+      .order('selected_at', { ascending: false })
+      .limit(EXPORT_LIMIT);
     if (from) q = q.gte('selected_at', from);
     if (to) q = q.lte('selected_at', to + 'T23:59:59Z');
     const { data } = await q;
 
+    type SelectionRow = { id: string; user_id: string; theme_id: number; selected_at: string; adopt_themes: { theme: string; category: string } | null };
     csv = toCSV(
-      (data ?? []).map((s: any) => ({
+      (data ?? []).map((s: SelectionRow) => ({
         id: s.id,
         user_id: s.user_id,
         theme_id: s.theme_id,
@@ -82,7 +87,8 @@ export async function GET(req: NextRequest) {
     let q = admin
       .from('reflections')
       .select('id, user_id, generated_at, theme_ids, content')
-      .order('generated_at', { ascending: false });
+      .order('generated_at', { ascending: false })
+      .limit(EXPORT_LIMIT);
     if (from) q = q.gte('generated_at', from);
     if (to) q = q.lte('generated_at', to + 'T23:59:59Z');
     const { data } = await q;

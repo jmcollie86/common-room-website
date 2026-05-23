@@ -14,7 +14,7 @@ export async function GET() {
     .select('id, full_name, gender, year_of_birth, home_postcode, created_at, is_admin')
     .order('created_at', { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'Failed to load users' }, { status: 500 });
 
   // Get auth emails via admin auth API
   const { data: authUsers } = await admin.auth.admin.listUsers({ perPage: 1000 });
