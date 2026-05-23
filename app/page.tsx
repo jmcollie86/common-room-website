@@ -25,7 +25,7 @@ export default function WelcomePage() {
         style={{ backgroundColor: Colors.primary }}
       >
         <Image src="/logo.png" alt="The Common Room" width={200} height={43} priority
-          style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }}
+          style={{ filter: 'brightness(0) invert(1)', opacity: '0.9' }}
         />
         <div>
           <p className="text-white/80 text-2xl font-georgia leading-relaxed mb-6">

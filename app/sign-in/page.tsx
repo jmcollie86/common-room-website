@@ -44,7 +44,7 @@ export default function SignInPage() {
       >
         <Link href="/">
           <Image src="/logo.png" alt="The Common Room" width={200} height={43} priority
-            style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }}
+            style={{ filter: 'brightness(0) invert(1)', opacity: '0.9' }}
           />
         </Link>
         <p className="text-white/70 text-xl font-georgia leading-relaxed">
