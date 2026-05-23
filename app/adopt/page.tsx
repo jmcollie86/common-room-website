@@ -110,62 +110,65 @@ export default function AdoptPage() {
 
   return (
     <AppShell active="adopt">
-      <div className="px-5 pt-2 pb-36">
+      <div className="max-w-6xl mx-auto px-8 py-10">
 
         {/* Header */}
-        <div className="mb-1">
-          <h1 className="font-georgia text-primary text-[26px] leading-[34px]">ADOPT Themes</h1>
-          <p className="text-subtext text-xs mt-1">
-            {selectedIds.length} / {MAX_SELECTIONS} selected
-          </p>
-        </div>
-
-        {/* Search */}
-        <div className="flex items-center bg-white border-[1.5px] border-secondary rounded-xl px-3.5 my-3 min-h-[48px] gap-2 focus-within:border-primary transition-colors">
-          <span className="text-subtext text-base">⌕</span>
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search themes…"
-            className="flex-1 text-sm text-ink placeholder:text-subtext bg-transparent focus:outline-none"
-          />
-        </div>
-
-        {/* Category pills */}
-        <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-none">
-          {categories.map((cat) => {
-            const isActive = cat === activeCategory;
-            return (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`shrink-0 px-3.5 py-2 min-h-[36px] rounded-full border-[1.5px] text-xs transition-colors ${
-                  isActive
-                    ? 'bg-primary border-primary text-white font-semibold'
-                    : 'bg-white border-secondary text-ink hover:border-primary/50'
-                }`}
-              >
-                {cat === 'All' ? 'All' : (CATEGORY_SHORT[cat] ?? cat)}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Max banner */}
-        {atMax && (
-          <div
-            className="rounded-lg p-3 mb-2 text-xs text-ink leading-5"
-            style={{ backgroundColor: Colors.accent + '30' }}
-          >
-            You&apos;ve selected 10 themes — remove one to add another.
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+          <div>
+            <h1 className="font-georgia text-primary text-4xl leading-tight">ADOPT Themes</h1>
+            <p className="text-subtext text-sm mt-2">
+              {selectedIds.length} of {MAX_SELECTIONS} selected
+              {atMax && <span className="ml-2 text-xs" style={{ color: Colors.accent }}>— remove one to add another</span>}
+            </p>
           </div>
-        )}
 
-        {/* Theme list */}
+          {selectedIds.length > 0 && (
+            <Link
+              href="/dashboard"
+              className="self-start md:self-auto flex items-center justify-center h-11 px-7 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity shrink-0"
+            >
+              View My Purpose
+            </Link>
+          )}
+        </div>
+
+        {/* Search + category filters row */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <div className="flex items-center bg-white border-[1.5px] border-secondary rounded-xl px-4 min-h-[44px] gap-2 focus-within:border-primary transition-colors flex-1">
+            <span className="text-subtext">⌕</span>
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search themes…"
+              className="flex-1 text-sm text-ink placeholder:text-subtext bg-transparent focus:outline-none"
+            />
+          </div>
+
+          <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
+            {categories.map((cat) => {
+              const isActive = cat === activeCategory;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`shrink-0 px-4 py-2 min-h-[44px] rounded-xl border-[1.5px] text-sm transition-colors ${
+                    isActive
+                      ? 'bg-primary border-primary text-white font-semibold'
+                      : 'bg-white border-secondary text-ink hover:border-primary/50'
+                  }`}
+                >
+                  {cat === 'All' ? 'All' : (CATEGORY_SHORT[cat] ?? cat)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Theme grid */}
         {themesLoading ? (
-          <div className="flex flex-col items-center justify-center pt-16 gap-3">
-            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <div className="w-7 h-7 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             <p className="text-subtext text-sm">Loading themes…</p>
           </div>
         ) : (
@@ -173,43 +176,30 @@ export default function AdoptPage() {
             {sections.map((section) => (
               <div key={section.title}>
                 {showGroupHeaders && (
-                  <p className="text-xs font-semibold text-subtext uppercase tracking-wider pt-4 pb-2">
+                  <p className="text-xs font-semibold text-subtext uppercase tracking-wider pt-6 pb-3">
                     {section.title}
                   </p>
                 )}
                 {section.data.length === 0 && (
-                  <p className="text-subtext text-sm text-center pt-12">No themes match your search.</p>
+                  <p className="text-subtext text-sm text-center py-16">No themes match your search.</p>
                 )}
-                {section.data.map((theme) => (
-                  <ThemeCard
-                    key={theme.id}
-                    theme={theme}
-                    selected={selectedIds.includes(theme.id)}
-                    disabled={atMax && !selectedIds.includes(theme.id)}
-                    onSelect={() => toggleSelection(theme.id)}
-                    onInfo={() => setInfoTheme(theme)}
-                  />
-                ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
+                  {section.data.map((theme) => (
+                    <ThemeCard
+                      key={theme.id}
+                      theme={theme}
+                      selected={selectedIds.includes(theme.id)}
+                      disabled={atMax && !selectedIds.includes(theme.id)}
+                      onSelect={() => toggleSelection(theme.id)}
+                      onInfo={() => setInfoTheme(theme)}
+                    />
+                  ))}
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
-
-      {/* Sticky bottom CTA */}
-      {selectedIds.length > 0 && (
-        <div
-          className="fixed bottom-16 left-0 right-0 max-w-lg mx-auto px-5 pt-3 pb-5 bg-background border-t"
-          style={{ borderColor: Colors.secondary + '60' }}
-        >
-          <Link
-            href="/dashboard"
-            className="flex items-center justify-center min-h-[52px] rounded-xl bg-primary text-white text-base font-semibold hover:opacity-90 transition-opacity"
-          >
-            View My Purpose
-          </Link>
-        </div>
-      )}
 
       <ThemeInfoModal theme={infoTheme} onClose={() => setInfoTheme(null)} />
     </AppShell>

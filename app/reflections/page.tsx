@@ -129,9 +129,9 @@ export default function ReflectionsPage() {
   if (isLoading || (generating && !latestTexts)) {
     return (
       <AppShell active="reflections">
-        <div className="flex flex-col items-center justify-center min-h-[60vh] px-8 text-center gap-5">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-5">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          <p className="font-georgia text-primary text-lg leading-relaxed">
+          <p className="font-georgia text-primary text-xl leading-relaxed max-w-sm">
             {generating ? "We're shaping something thoughtful for you…" : 'Loading your reflections…'}
           </p>
         </div>
@@ -142,15 +142,14 @@ export default function ReflectionsPage() {
   if (!hasThemes) {
     return (
       <AppShell active="reflections">
-        <div className="flex flex-col items-center justify-center min-h-[60vh] px-8 text-center">
-          <h2 className="font-georgia text-primary text-[22px] mb-3">Choose your themes first</h2>
-          <p className="text-subtext text-sm leading-relaxed mb-8">
-            Head to the Themes tab to select your ADOPT themes, then return here to generate your
-            reflections.
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+          <h2 className="font-georgia text-primary text-2xl mb-3">Choose your themes first</h2>
+          <p className="text-subtext text-base leading-relaxed mb-8 max-w-md">
+            Head to ADOPT Themes to select your themes, then return here to generate your reflections.
           </p>
           <Link
             href="/adopt"
-            className="flex items-center justify-center min-h-[50px] px-7 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="flex items-center justify-center h-12 px-8 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity"
           >
             Choose Themes
           </Link>
@@ -161,23 +160,39 @@ export default function ReflectionsPage() {
 
   return (
     <AppShell active="reflections">
-      <div className="px-5 pb-36 pt-3">
+      <div className="max-w-5xl mx-auto px-8 py-10">
 
         {/* Header */}
-        <div className="mb-5">
-          <h1 className="font-georgia text-primary text-[28px] leading-[36px]">Points of Reflection</h1>
-          {latest && (
-            <p className="text-subtext text-xs mt-1">Generated {formatDate(latest.generated_at)}</p>
-          )}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+          <div>
+            <h1 className="font-georgia text-primary text-4xl leading-tight">Points of Reflection</h1>
+            {latest && (
+              <p className="text-subtext text-sm mt-2">Generated {formatDate(latest.generated_at)}</p>
+            )}
+          </div>
+
+          {/* Generate button inline in header */}
+          <button
+            onClick={confirmGenerate}
+            disabled={generating || atLimit}
+            className="self-start md:self-auto flex items-center justify-center h-11 px-7 rounded-xl text-sm font-semibold transition-opacity disabled:opacity-60 shrink-0"
+            style={{ backgroundColor: atLimit ? Colors.subtext + '80' : Colors.primary, color: 'white' }}
+          >
+            {generating ? (
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              atLimit ? 'Monthly limit reached' : latestTexts ? 'Regenerate' : 'Generate Reflections'
+            )}
+          </button>
         </div>
 
         {/* Monthly usage */}
         <div
-          className="rounded-lg px-3.5 py-2.5 mb-6 flex items-center justify-between"
-          style={{ backgroundColor: atLimit ? Colors.error + '15' : Colors.accent + '25' }}
+          className="rounded-xl px-4 py-3 mb-8 flex items-center justify-between"
+          style={{ backgroundColor: atLimit ? Colors.error + '15' : Colors.accent + '20' }}
         >
           {atLimit ? (
-            <p className="text-sm text-ink leading-5">
+            <p className="text-sm text-ink">
               You&apos;ve used all {MONTHLY_LIMIT} reflections for this month. Resets in {nextMonthName()}.
             </p>
           ) : (
@@ -190,47 +205,32 @@ export default function ReflectionsPage() {
           )}
         </div>
 
-        {/* Latest reflections */}
+        {genError && (
+          <p className="text-error text-sm mb-4">{genError}</p>
+        )}
+
+        {/* Latest reflections — 3 across on desktop */}
         {latestTexts ? (
-          latestTexts.map((text, i) => <ReflectionCard key={i} text={text} index={i} />)
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+            {latestTexts.map((text, i) => <ReflectionCard key={i} text={text} index={i} />)}
+          </div>
         ) : (
-          <p className="text-subtext text-sm text-center pt-8">
+          <p className="text-subtext text-sm py-12 text-center">
             Your reflections will appear here once generated
           </p>
         )}
 
-        {genError && (
-          <p className="text-error text-sm text-center mt-2 mb-1">{genError}</p>
-        )}
-
-        {/* Past */}
+        {/* Past generations */}
         {past.length > 0 && (
-          <div className="mt-8">
-            <p className="text-xs font-semibold text-subtext uppercase tracking-wider mb-3">
+          <div className="mt-4">
+            <p className="text-xs font-semibold text-subtext uppercase tracking-wider mb-4">
               Previous reflections
             </p>
-            {past.map((r) => <PastReflectionGroup key={r.id} reflection={r} />)}
+            <div className="flex flex-col gap-2">
+              {past.map((r) => <PastReflectionGroup key={r.id} reflection={r} />)}
+            </div>
           </div>
         )}
-      </div>
-
-      {/* Bottom action */}
-      <div
-        className="fixed bottom-16 left-0 right-0 max-w-lg mx-auto px-5 pt-3 pb-5 bg-background border-t"
-        style={{ borderColor: Colors.secondary + '60' }}
-      >
-        <button
-          onClick={confirmGenerate}
-          disabled={generating || atLimit}
-          className="w-full flex items-center justify-center min-h-[52px] rounded-xl text-white text-base font-semibold transition-opacity disabled:opacity-70"
-          style={{ backgroundColor: atLimit ? Colors.subtext + 'AA' : Colors.primary }}
-        >
-          {generating ? (
-            <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          ) : (
-            atLimit ? 'Monthly limit reached' : latestTexts ? 'Regenerate' : 'Generate Reflections'
-          )}
-        </button>
       </div>
 
       {/* Confirm dialog */}

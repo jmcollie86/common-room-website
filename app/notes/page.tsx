@@ -159,101 +159,90 @@ export default function NotesPage() {
 
   return (
     <AppShell active="notes">
-      <div className="px-5 pt-3 pb-36">
+      <div className="max-w-4xl mx-auto px-8 py-10">
 
-        {/* Header */}
-        <div className="flex items-start justify-between mb-1">
+        {/* Header + actions row */}
+        <div className="flex items-start justify-between mb-2">
           <div>
-            <h1 className="font-georgia text-primary text-[28px] leading-[36px]">My Note</h1>
-            <p className="text-subtext text-xs mt-1">A private space for your own thoughts</p>
+            <h1 className="font-georgia text-primary text-4xl leading-tight">My Note</h1>
+            <p className="text-subtext text-sm mt-2">A private space for your own thoughts</p>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex items-center gap-2 shrink-0">
+            <span
+              className="text-xs mr-2"
+              style={{
+                color: atLimit ? Colors.error : nearLimit ? '#B07A30' : Colors.subtext,
+                fontWeight: nearLimit ? 500 : 400,
+              }}
+            >
+              {words} / {MAX_WORDS} words
+              {atLimit ? ' — limit reached' : nearLimit ? ' — almost full' : ''}
+            </span>
+            <span className="text-xs text-subtext mr-3">
+              {saving ? 'Saving…' : saveStatus === 'saved' ? 'Saved' : saveStatus === 'error' ? 'Save failed' : isDirty ? 'Unsaved' : ''}
+            </span>
+
+            <button
+              onClick={handleExport}
+              disabled={!content.trim()}
+              title="Copy to clipboard"
+              className="h-10 px-4 rounded-xl border-[1.5px] text-sm disabled:opacity-30 transition-opacity hover:bg-primary/5"
+              style={{ borderColor: Colors.secondary + '80', color: Colors.primary }}
+            >
+              Copy
+            </button>
+            <button
+              onClick={() => { if (content.trim()) setConfirmOpen(true); }}
+              disabled={submitting || !content.trim()}
+              className="h-10 px-4 rounded-xl border-[1.5px] text-sm font-medium disabled:opacity-40 transition-colors"
+              style={{
+                borderColor: content.trim() ? Colors.accent : Colors.secondary + '40',
+                backgroundColor: content.trim() ? Colors.accent + '20' : 'transparent',
+                color: Colors.primary,
+              }}
+            >
+              {submitting ? '…' : 'Submit'}
+            </button>
+            <button
+              onClick={() => handleSave()}
+              disabled={saving || !isDirty}
+              className="h-10 px-5 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50"
+              style={{
+                backgroundColor: isDirty ? Colors.primary : Colors.secondary + '50',
+                color: isDirty ? 'white' : Colors.subtext,
+              }}
+            >
+              {saving ? 'Saving…' : saveStatus === 'saved' && !isDirty ? 'Saved' : 'Save'}
+            </button>
           </div>
         </div>
 
-        {/* Word count */}
-        <div className="flex items-center justify-between mb-3">
-          <span
-            className="text-xs"
-            style={{
-              color: atLimit ? Colors.error : nearLimit ? '#B07A30' : Colors.subtext,
-              fontWeight: nearLimit ? 500 : 400,
-            }}
-          >
-            {words} / {MAX_WORDS} words
-            {atLimit ? ' — limit reached' : nearLimit ? ' — almost full' : ''}
-          </span>
-          <span className="text-xs text-subtext">
-            {saving ? 'Saving…' : saveStatus === 'saved' ? 'Saved' : saveStatus === 'error' ? 'Save failed' : isDirty ? 'Unsaved' : ''}
-          </span>
+        {/* Writing area */}
+        <div
+          className="mt-6 rounded-2xl bg-white p-6 min-h-[400px]"
+          style={{ border: `1px solid ${Colors.secondary}50` }}
+        >
+          <textarea
+            value={content}
+            onChange={(e) => handleChange(e.target.value)}
+            placeholder="Write your thoughts here…"
+            className="w-full h-full min-h-[360px] text-base text-ink placeholder:text-subtext bg-transparent resize-none focus:outline-none leading-relaxed"
+          />
         </div>
-
-        {/* Text area */}
-        <textarea
-          value={content}
-          onChange={(e) => handleChange(e.target.value)}
-          placeholder="Write your thoughts here…"
-          rows={10}
-          className="w-full text-base text-ink placeholder:text-subtext bg-transparent resize-none focus:outline-none leading-relaxed"
-        />
 
         {/* Past notes */}
         {submittedNotes.length > 0 && (
-          <div className="mt-6">
-            <p className="text-xs font-semibold text-subtext uppercase tracking-wider mb-3">
+          <div className="mt-10">
+            <p className="text-xs font-semibold text-subtext uppercase tracking-wider mb-4">
               Previous notes
             </p>
-            {submittedNotes.map((note) => <PastNote key={note.id} note={note} />)}
+            <div className="flex flex-col gap-2">
+              {submittedNotes.map((note) => <PastNote key={note.id} note={note} />)}
+            </div>
           </div>
         )}
-      </div>
-
-      {/* Bottom actions */}
-      <div
-        className="fixed bottom-16 left-0 right-0 max-w-lg mx-auto px-5 pt-3 pb-5 bg-background border-t flex gap-2.5"
-        style={{ borderColor: Colors.secondary + '60' }}
-      >
-        {/* Save */}
-        <button
-          onClick={() => handleSave()}
-          disabled={saving || !isDirty}
-          className="flex-1 flex items-center justify-center min-h-[52px] rounded-xl text-sm font-semibold transition-colors disabled:opacity-60"
-          style={{
-            backgroundColor: isDirty ? Colors.primary : Colors.secondary + '60',
-            color: isDirty ? 'white' : Colors.subtext,
-          }}
-        >
-          {saving ? (
-            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          ) : (
-            saveStatus === 'saved' && !isDirty ? 'Saved' : 'Save'
-          )}
-        </button>
-
-        {/* Submit */}
-        <button
-          onClick={() => { if (content.trim()) setConfirmOpen(true); }}
-          disabled={submitting || !content.trim()}
-          className="flex-1 flex items-center justify-center min-h-[52px] rounded-xl border-[1.5px] text-sm font-semibold transition-colors disabled:opacity-40"
-          style={{
-            borderColor: content.trim() ? Colors.accent : Colors.secondary + '40',
-            backgroundColor: content.trim() ? Colors.accent + '20' : 'transparent',
-            color: Colors.primary,
-          }}
-        >
-          {submitting ? (
-            <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          ) : 'Submit'}
-        </button>
-
-        {/* Share / copy */}
-        <button
-          onClick={handleExport}
-          disabled={!content.trim()}
-          className="flex items-center justify-center min-h-[52px] px-4 rounded-xl border-[1.5px] disabled:opacity-30 transition-opacity"
-          style={{ borderColor: Colors.secondary + '60', color: Colors.primary }}
-          aria-label="Share or copy note"
-        >
-          ↑
-        </button>
       </div>
 
       {/* Confirm submit dialog */}
