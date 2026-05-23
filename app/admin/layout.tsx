@@ -43,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const sidebarContent = (
     <>
-      <div className="px-6 py-5 flex items-center justify-between" style={{ borderBottom: `1px solid ${Colors.secondary}30` }}>
+      <div className="px-6 py-5 flex items-center justify-between" className=\"b-b-sm\">
         <div>
           <Image src="/logo.png" alt="The Common Room" width={150} height={32} />
           <span
@@ -108,7 +108,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <main className="flex-1 min-h-screen overflow-y-auto lg:ml-56 xl:ml-64">
         <div
           className="sticky top-0 z-20 flex items-center gap-3 px-4 py-3 bg-background lg:hidden"
-          style={{ borderBottom: `1px solid ${Colors.secondary}30` }}
+          className=\"b-b-sm\"
         >
           <button onClick={() => setMobileOpen(true)} className="p-2 rounded-lg hover:bg-primary/5 transition-colors" aria-label="Open menu">
             <Menu size={20} color={Colors.primary} />
