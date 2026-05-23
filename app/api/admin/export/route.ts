@@ -111,7 +111,8 @@ export async function GET(req: NextRequest) {
       .from('user_notes')
       .select('id, user_id, content, updated_at, submitted_at')
       .not('submitted_at', 'is', null)
-      .order('submitted_at', { ascending: false });
+      .order('submitted_at', { ascending: false })
+      .limit(EXPORT_LIMIT);
     if (from) q = q.gte('submitted_at', from);
     if (to) q = q.lte('submitted_at', to + 'T23:59:59Z');
     const { data } = await q;
