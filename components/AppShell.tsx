@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { LayoutDashboard, Layers, Sparkles, FileText, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { LayoutDashboard, Layers, Sparkles, FileText, User, ShieldCheck } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 import { Colors } from '@/constants/theme';
 
 type Tab = 'dashboard' | 'adopt' | 'reflections' | 'notes';
