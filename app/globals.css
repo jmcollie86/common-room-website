@@ -1,5 +1,35 @@
 @import "tailwindcss";
 
+/* Brand typeface — Relative */
+@font-face {
+  font-family: 'Relative';
+  src: url('/fonts/Relative-Book.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Relative';
+  src: url('/fonts/Relative-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Relative';
+  src: url('/fonts/Relative-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Relative';
+  src: url('/fonts/Relative-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
   --color-primary: #465362;
   --color-accent: #EAC67A;
@@ -8,6 +38,7 @@
   --color-ink: #2B2B2B;
   --color-subtext: #999999;
   --color-error: #B05A5A;
+  --font-sans: 'Relative', system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -17,7 +48,7 @@
 body {
   background-color: #F6F6F3;
   color: #2B2B2B;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Relative', system-ui, -apple-system, sans-serif;
   font-size: 16px;
   line-height: 1.5;
 }

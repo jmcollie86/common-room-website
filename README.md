@@ -1,36 +1,168 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Common Room — Web App
 
-## Getting Started
+A web companion to The Common Room in-person workshops. Helps participants reflect on what matters most, explore ADOPT themes, generate AI-powered Points of Reflection, and keep a personal note.
 
-First, run the development server:
+---
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Styling | Tailwind CSS v4 |
+| Database / Auth | Supabase (PostgreSQL + RLS) |
+| AI | Anthropic Claude (via Supabase Edge Function) |
+| Data fetching | TanStack React Query |
+| Charts (admin) | Recharts |
+| Typeface | Relative (Book, Medium, Bold, Italic) |
+
+---
+
+## Project structure
+
+```
+tcr-website/
+├── app/
+│   ├── (auth pages)       # /, /sign-in, /register
+│   ├── dashboard/         # My Purpose — selected themes
+│   ├── adopt/             # ADOPT theme browser + selection
+│   ├── reflections/       # AI-generated Points of Reflection
+│   ├── notes/             # Personal note (draft + submit)
+│   ├── profile/           # Account details + sign out
+│   └── admin/             # Admin dashboard (is_admin only)
+│       ├── page.tsx       # Overview stats + charts
+│       ├── users/         # User table
+│       ├── themes/        # Theme analytics
+│       └── export/        # CSV data export
+├── app/api/admin/         # Server-side admin API routes
+├── components/
+│   ├── AppShell.tsx       # Sidebar nav (desktop + mobile hamburger)
+│   ├── ThemeCard.tsx
+│   ├── ReflectionCard.tsx
+│   ├── ThemeInfoModal.tsx
+│   └── Providers.tsx      # React Query provider
+├── lib/
+│   ├── supabase.ts        # Browser Supabase client
+│   ├── supabase-server.ts # Server Supabase client (SSR cookies)
+│   ├── supabase-admin.ts  # Service role client (admin API only)
+│   ├── admin-guard.ts     # Shared admin auth check
+│   ├── api.ts             # App data fetching functions
+│   └── database.types.ts  # Generated Supabase types
+├── constants/
+│   └── theme.ts           # Brand colours + typography tokens
+├── public/
+│   ├── logo.png           # Horizontal wordmark
+│   ├── icon.png           # Circle mark (favicon + apple-touch-icon)
+│   ├── og-image.png       # Open Graph banner image
+│   └── fonts/             # Relative typeface (OTF)
+├── proxy.ts               # Auth proxy (replaces middleware in Next.js 16+)
+└── next.config.ts         # Security headers
+```
+
+---
+
+## Local setup
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Environment variables
+
+Create `.env.local` in this directory:
+
+```bash
+# Public — safe to expose in the browser
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+
+# Server-side only — NEVER prefix with NEXT_PUBLIC_
+# Supabase dashboard → Settings → API → service_role key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
+### 3. Database migration
+
+The app requires an `is_admin` column on the `profiles` table. Run in the Supabase SQL editor:
+
+```sql
+alter table profiles
+  add column if not exists is_admin boolean not null default false;
+```
+
+### 4. Run locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Admin dashboard
 
-## Learn More
+The admin dashboard at `/admin` is only accessible to users with `is_admin = true` in their profile.
 
-To learn more about Next.js, take a look at the following resources:
+To grant admin access, run in the Supabase SQL editor:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sql
+update profiles
+set is_admin = true
+where id = (select id from auth.users where email = 'your@email.com');
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The admin area provides:
+- **Overview** — registration trends, engagement stats
+- **Users** — searchable/sortable table of all users
+- **Themes** — theme popularity charts by category
+- **Export** — date-filtered CSV downloads (users, selections, reflections, notes)
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Vercel (recommended)
+
+1. Push to GitHub
+2. Import the repo into Vercel
+3. Add the three environment variables from `.env.local`
+4. Deploy — Vercel auto-detects Next.js
+
+### Environment variables required in production
+
+| Variable | Where to find it |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Settings → API |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Settings → API |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Settings → API → service_role |
+
+### Supabase Edge Function
+
+The `generate-reflections` Edge Function must be deployed separately from the `tcr-app` directory:
+
+```bash
+cd ../tcr-app
+supabase functions deploy generate-reflections
+```
+
+The `ANTHROPIC_API_KEY` secret must be set in the Supabase dashboard under Edge Functions → Secrets.
+
+---
+
+## Brand
+
+- **Typeface:** Relative (Book / Medium / Bold / Italic) — loaded from `/public/fonts/`
+- **Headings:** Georgia serif
+- **Colours:** defined in `constants/theme.ts` and `app/globals.css`
+- **Raw brand assets:** `../brand_assets/`
+
+---
+
+## Related
+
+- `../tcr-app/` — React Native / Expo mobile app (iOS + Android)
+- `../docs/` — Client brief, wireframes, style guide (read-only reference)
+- `../CLAUDE.md` — Full project context for AI-assisted development
