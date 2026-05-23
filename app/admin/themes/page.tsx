@@ -79,8 +79,8 @@ export default function AdminThemesPage() {
                 outerRadius={90}
                 innerRadius={50}
                 paddingAngle={3}
-                label={({ category, percent }) =>
-                  `${category.split(' ')[0]} ${(percent * 100).toFixed(0)}%`
+                label={({ name, percent }) =>
+                  `${(name as string).split(' ')[0]} ${((percent ?? 0) * 100).toFixed(0)}%`
                 }
                 labelLine={false}
               >
