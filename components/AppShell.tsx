@@ -73,7 +73,7 @@ export function AppShell({ active, children }: AppShellProps) {
       </nav>
 
       {/* Bottom links */}
-      <div className="p-3 flex flex-col gap-0.5" style={{ borderTop: `1px solid ${Colors.secondary}30` }}>
+      <div className="p-3 flex flex-col gap-0.5 b-t-sm">
         {isAdmin && (
           <Link
             href="/admin"
@@ -111,11 +111,7 @@ export function AppShell({ active, children }: AppShellProps) {
 
       {/* Sidebar — desktop: always visible; mobile: slide-in overlay */}
       <aside
-        className="fixed inset-y-0 left-0 w-64 flex flex-col bg-white z-40 transition-transform duration-200 lg:translate-x-0 lg:w-56 xl:w-64"
-        style={{
-          borderRight: `1px solid ${Colors.secondary}40`,
-          transform: mobileOpen ? 'translateX(0)' : undefined,
-        }}
+        className="fixed inset-y-0 left-0 w-64 flex flex-col bg-white z-40 lg:w-56 xl:w-64 b-r"
       >
         {/* Hide on mobile unless open */}
         <div className={`flex flex-col h-full ${mobileOpen ? 'flex' : 'hidden lg:flex'}`}>
@@ -127,10 +123,7 @@ export function AppShell({ active, children }: AppShellProps) {
       <main className="flex-1 min-h-screen overflow-y-auto lg:ml-56 xl:ml-64">
 
         {/* Mobile top bar */}
-        <div
-          className="sticky top-0 z-20 flex items-center gap-3 px-4 py-3 bg-background lg:hidden"
-          style={{ borderBottom: `1px solid ${Colors.secondary}30` }}
-        >
+        <div className="sticky top-0 z-20 flex items-center gap-3 px-4 py-3 bg-background lg:hidden b-b-sm">
           <button
             onClick={() => setMobileOpen(true)}
             className="p-2 rounded-lg hover:bg-primary/5 transition-colors"
