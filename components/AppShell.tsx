@@ -22,6 +22,16 @@ interface AppShellProps {
 }
 
 export function AppShell({ active, children }: AppShellProps) {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      const { data } = await supabase.from('profiles').select('is_admin').eq('id', user.id).maybeSingle();
+      if (data?.is_admin) setIsAdmin(true);
+    });
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
@@ -58,8 +68,18 @@ export function AppShell({ active, children }: AppShellProps) {
           })}
         </nav>
 
-        {/* Profile */}
-        <div className="p-3" style={{ borderTop: `1px solid ${Colors.secondary}30` }}>
+        {/* Bottom links */}
+        <div className="p-3 flex flex-col gap-0.5" style={{ borderTop: `1px solid ${Colors.secondary}30` }}>
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors hover:bg-primary/5"
+              style={{ color: Colors.subtext }}
+            >
+              <ShieldCheck size={18} strokeWidth={1.8} />
+              Admin
+            </Link>
+          )}
           <Link
             href="/profile"
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors hover:bg-primary/5"

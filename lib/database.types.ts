@@ -11,6 +11,7 @@ export interface Database {
           year_of_birth: number | null;
           home_postcode: string | null;
           created_at: string;
+          is_admin: boolean;
         };
         Insert: {
           id: string;
@@ -19,6 +20,7 @@ export interface Database {
           year_of_birth?: number | null;
           home_postcode?: string | null;
           created_at?: string;
+          is_admin?: boolean;
         };
         Update: {
           id?: string;
@@ -27,6 +29,7 @@ export interface Database {
           year_of_birth?: number | null;
           home_postcode?: string | null;
           created_at?: string;
+          is_admin?: boolean;
         };
         Relationships: [];
       };
