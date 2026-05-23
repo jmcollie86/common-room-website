@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     index: false, // private app — not for public search indexing
     follow: false,
   },
+  colorScheme: 'light', // prevents Dark Reader and other extensions from injecting styles
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
