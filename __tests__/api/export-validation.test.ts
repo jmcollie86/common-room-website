@@ -6,6 +6,13 @@ vi.mock('@/lib/admin-guard', () => ({
   requireAdmin: vi.fn(async () => ({ ok: true, userId: 'admin-1' })),
 }));
 
+// Rate limiter: always pass through in tests
+vi.mock('@/lib/rate-limit', () => ({
+  exportLimiter: null,
+  statsLimiter: null,
+  checkRateLimit: vi.fn(async () => null),
+}));
+
 // Fully chainable mock that resolves to empty data
 function chainable(): Record<string, unknown> {
   const obj: Record<string, unknown> = {};
