@@ -35,7 +35,7 @@ function PastNote({ note }: { note: UserNote }) {
   }
 
   return (
-    <div className="rounded-xl border bg-white mb-2.5 overflow-hidden" style={{ borderColor: Colors.secondary + '60' }}>
+    <div className="rounded-xl bg-white mb-2.5 overflow-hidden b-card">
       <button
         onClick={() => setExpanded((v) => !v)}
         className="w-full flex items-center justify-between px-4 py-3.5 min-h-[44px] hover:bg-gray-50 transition-colors text-left"

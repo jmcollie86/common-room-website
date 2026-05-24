@@ -98,7 +98,7 @@ export default function ReflectionsPage() {
   const atLimit = monthlyCount >= MONTHLY_LIMIT;
   const latest = allReflections[0] ?? null;
   const past = allReflections.slice(1);
-  const latestTexts = latest ? (latest.content as string[]) : null;
+  const latestTexts = latest ? toTexts(latest.content) : null;
   const remaining = MONTHLY_LIMIT - monthlyCount;
 
   async function handleGenerate() {
