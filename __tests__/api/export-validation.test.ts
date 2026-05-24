@@ -6,20 +6,20 @@ vi.mock('@/lib/admin-guard', () => ({
   requireAdmin: vi.fn(async () => ({ ok: true, userId: 'admin-1' })),
 }));
 
-// Mock admin client to return empty data
+// Fully chainable mock that resolves to empty data
+function chainable(): Record<string, unknown> {
+  const obj: Record<string, unknown> = {};
+  const methods = ['select', 'order', 'limit', 'gte', 'lte', 'not', 'eq', 'is'];
+  for (const m of methods) obj[m] = vi.fn(() => obj);
+  // terminal: make it thenable so await works
+  obj.then = (cb: (v: { data: null; count: null; error: null }) => void) =>
+    Promise.resolve(cb({ data: null, count: null, error: null }));
+  return obj;
+}
+
 vi.mock('@/lib/supabase-admin', () => ({
   createAdminClient: vi.fn(() => ({
-    from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        order: vi.fn(() => ({
-          limit: vi.fn(() => ({
-            gte: vi.fn(function(this: unknown) { return this; }),
-            lte: vi.fn(function(this: unknown) { return this; }),
-            then: vi.fn((cb: (v: { data: null }) => void) => Promise.resolve(cb({ data: null }))),
-          })),
-        })),
-      })),
-    })),
+    from: vi.fn(() => chainable()),
     auth: { admin: { listUsers: vi.fn(async () => ({ data: { users: [] } })) } },
   })),
 }));
