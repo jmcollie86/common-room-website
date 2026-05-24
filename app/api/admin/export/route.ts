@@ -19,6 +19,9 @@ function toCSV(rows: Record<string, unknown>[]): string {
 
 const EXPORT_LIMIT = 5000;
 
+const VALID_TYPES = new Set(['users', 'selections', 'reflections', 'notes']);
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
 export async function GET(req: NextRequest) {
   const guard = await requireAdmin();
   if (!guard.ok) return guard.response;
@@ -27,6 +30,16 @@ export async function GET(req: NextRequest) {
   const type = searchParams.get('type') ?? 'users';
   const from = searchParams.get('from');
   const to = searchParams.get('to');
+
+  if (!VALID_TYPES.has(type)) {
+    return new Response(JSON.stringify({ error: 'Invalid type' }), { status: 400 });
+  }
+  if (from && !ISO_DATE.test(from)) {
+    return new Response(JSON.stringify({ error: 'Invalid from date' }), { status: 400 });
+  }
+  if (to && !ISO_DATE.test(to)) {
+    return new Response(JSON.stringify({ error: 'Invalid to date' }), { status: 400 });
+  }
 
   const admin = createAdminClient();
   let csv = '';

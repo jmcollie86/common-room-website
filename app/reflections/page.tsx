@@ -32,12 +32,17 @@ function nextMonthName() {
   return d.toLocaleDateString('en-GB', { month: 'long' });
 }
 
+function toTexts(content: unknown): string[] {
+  if (!Array.isArray(content)) return [];
+  return content.filter((x): x is string => typeof x === 'string');
+}
+
 function PastReflectionGroup({ reflection }: { reflection: Reflection }) {
   const [expanded, setExpanded] = useState(false);
-  const texts = reflection.content as string[];
+  const texts = toTexts(reflection.content);
 
   return (
-    <div className="rounded-xl border bg-white mb-2.5 overflow-hidden" style={{ borderColor: Colors.secondary + '60' }}>
+    <div className="rounded-xl bg-white mb-2.5 overflow-hidden b-card">
       <button
         onClick={() => setExpanded((v) => !v)}
         className="w-full flex items-center justify-between px-4 py-3.5 min-h-[44px] hover:bg-gray-50 transition-colors text-left"
