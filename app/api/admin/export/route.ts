@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { requireAdmin } from '@/lib/admin-guard';
 import { createAdminClient } from '@/lib/supabase-admin';
+import { exportLimiter, checkRateLimit } from '@/lib/rate-limit';
 
 function toCSV(rows: Record<string, unknown>[]): string {
   if (!rows.length) return '';
@@ -25,6 +26,9 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 export async function GET(req: NextRequest) {
   const guard = await requireAdmin();
   if (!guard.ok) return guard.response;
+
+  const limited = await checkRateLimit(exportLimiter, guard.userId);
+  if (limited) return limited;
 
   const { searchParams } = req.nextUrl;
   const type = searchParams.get('type') ?? 'users';

@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/admin-guard';
 import { createAdminClient } from '@/lib/supabase-admin';
+import { statsLimiter, checkRateLimit } from '@/lib/rate-limit';
 
 export async function GET() {
   const guard = await requireAdmin();
   if (!guard.ok) return guard.response;
+
+  const limited = await checkRateLimit(statsLimiter, guard.userId);
+  if (limited) return limited;
 
   const admin = createAdminClient();
 
