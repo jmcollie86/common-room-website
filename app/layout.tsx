@@ -1,6 +1,10 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Providers } from '@/components/Providers';
+
+export const viewport: Viewport = {
+  colorScheme: 'light',
+};
 
 export const metadata: Metadata = {
   title: {
@@ -31,7 +35,6 @@ export const metadata: Metadata = {
     index: false, // private app — not for public search indexing
     follow: false,
   },
-  colorScheme: 'light',
   other: {
     'darkreader-lock': '', // tells Dark Reader not to modify this page
   },
