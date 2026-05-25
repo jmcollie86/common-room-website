@@ -39,7 +39,7 @@ export default function AdoptPage() {
     });
   }, [router]);
 
-  const { data: themes = [], isLoading: themesLoading } = useQuery({
+  const { data: themes = [], isLoading: themesLoading, isError: themesError } = useQuery({
     queryKey: ['adopt-themes'],
     queryFn: fetchAdoptThemes,
     staleTime: Infinity,
@@ -170,6 +170,10 @@ export default function AdoptPage() {
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <div className="w-7 h-7 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             <p className="text-subtext text-sm">Loading themes…</p>
+          </div>
+        ) : themesError ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <p className="text-sm" style={{ color: Colors.error }}>Unable to load themes. Please try refreshing the page.</p>
           </div>
         ) : (
           <div>
