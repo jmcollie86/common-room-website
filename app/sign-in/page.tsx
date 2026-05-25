@@ -58,7 +58,7 @@ export default function SignInPage() {
 
         <div className="lg:hidden mb-10">
           <Link href="/">
-            <Image src="/logo.png" alt="The Common Room" width={180} height={38} priority />
+            <Image src="/logo.png" alt="The Common Room" width={180} height={38} priority  />
           </Link>
         </div>
 

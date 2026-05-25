@@ -43,7 +43,7 @@ export default function WelcomePage() {
 
         {/* Mobile logo */}
         <div className="lg:hidden mb-10">
-          <Image src="/logo.png" alt="The Common Room" width={200} height={43} priority />
+          <Image src="/logo.png" alt="The Common Room" width={200} height={43} priority  />
         </div>
 
         <h1 className="font-georgia text-primary text-3xl xl:text-4xl leading-tight mb-8">

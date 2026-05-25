@@ -45,7 +45,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <>
       <div className="px-6 py-5 flex items-center justify-between b-b-sm">
         <div>
-          <Image src="/logo.png" alt="The Common Room" width={150} height={32} />
+          <Image src="/logo.png" alt="The Common Room" width={150} height={32}  />
           <span
             className="inline-block mt-2 text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full"
             style={{ backgroundColor: Colors.accent + '40', color: Colors.primary }}

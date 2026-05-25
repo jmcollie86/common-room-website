@@ -38,7 +38,7 @@ export function AppShell({ active, children }: AppShellProps) {
       {/* Logo */}
       <div className="px-6 py-6 flex items-center justify-between b-b-sm">
         <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
-          <Image src="/logo.png" alt="The Common Room" width={160} height={34} priority />
+          <Image src="/logo.png" alt="The Common Room" width={160} height={34} priority  />
         </Link>
         <button
           onClick={() => setMobileOpen(false)}
@@ -131,7 +131,7 @@ export function AppShell({ active, children }: AppShellProps) {
           >
             <Menu size={20} color={Colors.primary} />
           </button>
-          <Image src="/logo.png" alt="The Common Room" width={120} height={26} />
+          <Image src="/logo.png" alt="The Common Room" width={120} height={26} priority  />
         </div>
 
         {children}
