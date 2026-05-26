@@ -111,10 +111,11 @@ export function AppShell({ active, children }: AppShellProps) {
 
       {/* Sidebar — desktop: always visible; mobile: slide-in overlay */}
       <aside
-        className="fixed inset-y-0 left-0 w-64 flex flex-col bg-white z-40 lg:w-56 xl:w-64 b-r"
+        className={`fixed inset-y-0 left-0 w-64 flex flex-col bg-white z-40 lg:w-56 xl:w-64 b-r transition-transform duration-200 ${
+          mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}
       >
-        {/* Hide on mobile unless open */}
-        <div className={`flex flex-col h-full ${mobileOpen ? 'flex' : 'hidden lg:flex'}`}>
+        <div className="flex flex-col h-full">
           {sidebarContent}
         </div>
       </aside>
