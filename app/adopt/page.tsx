@@ -106,7 +106,7 @@ export default function AdoptPage() {
   }, [themes, search, activeCategory]);
 
   const atMax = selectedIds.length >= MAX_SELECTIONS;
-  const showGroupHeaders = activeCategory === 'All' && search.trim() === '';
+  const showGroupHeaders = search.trim() === ''; // show full category heading whenever not searching
 
   return (
     <AppShell active="adopt">
