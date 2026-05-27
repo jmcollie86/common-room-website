@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { LayoutDashboard, Layers, Sparkles, FileText, User, ShieldCheck, Menu, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -38,7 +37,8 @@ export function AppShell({ active, children }: AppShellProps) {
       {/* Logo */}
       <div className="px-6 py-6 flex items-center justify-between b-b-sm">
         <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
-          <Image src="/logo.png" alt="The Common Room" width={160} height={34} priority  />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/tcr-logo-secondary.png" alt="The Common Room" width={140} height={30} />
         </Link>
         <button
           onClick={() => setMobileOpen(false)}
@@ -132,7 +132,8 @@ export function AppShell({ active, children }: AppShellProps) {
           >
             <Menu size={20} color={Colors.primary} />
           </button>
-          <Image src="/logo.png" alt="The Common Room" width={120} height={26} priority  />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/tcr-logo-secondary.png" alt="The Common Room" width={120} height={26} />
         </div>
 
         {children}
