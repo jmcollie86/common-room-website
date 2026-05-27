@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Colors } from '@/constants/theme';
@@ -105,8 +104,9 @@ export default function RegisterPage() {
         style={{ backgroundColor: Colors.primary }}
       >
         <Link href="/">
-          <Image src="/logo.png" alt="The Common Room" width={200} height={43} priority
-            style={{ filter: 'brightness(0) invert(1)', opacity: '0.9' }}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/tcr-logo.png" alt="The Common Room" width={100} height={100}
+            style={{ borderRadius: '50%' }}
           />
         </Link>
         <p className="text-white/70 text-xl font-georgia leading-relaxed">
@@ -120,7 +120,10 @@ export default function RegisterPage() {
 
         <div className="lg:hidden mb-10">
           <Link href="/">
-            <Image src="/logo.png" alt="The Common Room" width={180} height={38} priority  />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/tcr-logo.png" alt="The Common Room" width={80} height={80}
+              style={{ borderRadius: '50%' }}
+            />
           </Link>
         </div>
 

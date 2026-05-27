@@ -29,8 +29,8 @@ export default function WelcomePage() {
         style={{ backgroundColor: Colors.primary }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/tcr-logo.png" alt="The Common Room" width={110} height={110}
-          style={{ opacity: 0.9 }}
+        <img src="/tcr-logo.png" alt="The Common Room" width={100} height={100}
+          style={{ borderRadius: '50%' }}
         />
         <div>
           <p className="text-white/80 text-2xl font-georgia leading-relaxed mb-6">
@@ -49,7 +49,9 @@ export default function WelcomePage() {
         {/* Mobile logo */}
         <div className="lg:hidden mb-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/tcr-logo.png" alt="The Common Room" width={80} height={80} />
+          <img src="/tcr-logo.png" alt="The Common Room" width={100} height={100}
+            style={{ borderRadius: '50%' }}
+          />
         </div>
 
         <h1 className="font-georgia text-primary text-3xl xl:text-4xl leading-tight mb-8">
