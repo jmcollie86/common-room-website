@@ -53,11 +53,11 @@ export function ThemeCard({ theme, selected, disabled, onSelect, onInfo }: Theme
           disabled={disabled}
           className="flex-1 text-left mr-1"
         >
-          <p className="font-georgia text-base text-ink leading-[22px] line-clamp-2">
+          <p className="font-georgia text-base text-ink leading-[22px]">
             {theme.theme}
           </p>
           {theme.description && (
-            <p className="text-xs text-subtext mt-0.5 leading-[18px] line-clamp-1">
+            <p className="text-xs text-subtext mt-0.5 leading-[18px]">
               {theme.description}
             </p>
           )}
