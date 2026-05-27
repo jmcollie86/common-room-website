@@ -156,7 +156,7 @@ export default function ReflectionsPage() {
             href="/adopt"
             className="flex items-center justify-center h-12 px-8 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity"
           >
-            Choose Themes
+            Choose ADOPT Themes
           </Link>
         </div>
       </AppShell>

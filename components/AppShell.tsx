@@ -9,7 +9,7 @@ import { Colors } from '@/constants/theme';
 type Tab = 'dashboard' | 'adopt' | 'reflections' | 'notes';
 
 const tabs = [
-  { id: 'dashboard' as Tab, label: 'My Purpose', href: '/dashboard', Icon: LayoutDashboard },
+  { id: 'dashboard' as Tab, label: 'My Purpose Dashboard', href: '/dashboard', Icon: LayoutDashboard },
   { id: 'adopt' as Tab, label: 'ADOPT Themes', href: '/adopt', Icon: Layers },
   { id: 'reflections' as Tab, label: 'Reflections', href: '/reflections', Icon: Sparkles },
   { id: 'notes' as Tab, label: 'My Note', href: '/notes', Icon: FileText },
