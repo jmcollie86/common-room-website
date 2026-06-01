@@ -127,7 +127,7 @@ export default function AdoptPage() {
               href="/dashboard"
               className="self-start md:self-auto flex items-center justify-center h-11 px-7 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity shrink-0"
             >
-              View My Purpose
+              View Selection
             </Link>
           )}
         </div>
