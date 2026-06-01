@@ -76,10 +76,10 @@ export default function AdminOverviewPage() {
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-10">
         <StatCard label="Total users" value={s.totalUsers} />
         <StatCard label="Active users" value={s.uniqueActiveUsers} sub="have selected themes" />
-        <StatCard label="Reflections" value={s.totalReflections} />
+        <StatCard label="AI Reflections" value={s.totalReflections} />
         <StatCard label="Notes submitted" value={s.totalNotes} />
         <StatCard label="New this month" value={s.newUsersThisMonth} sub="registrations" />
-        <StatCard label="Reflections this month" value={s.reflectionsThisMonth} />
+        <StatCard label="AI Reflections this month" value={s.reflectionsThisMonth} />
       </div>
 
       {/* Charts row */}
@@ -138,7 +138,7 @@ export default function AdminOverviewPage() {
               data={[
                 { label: 'Registered', value: s.totalUsers },
                 { label: 'Active', value: s.uniqueActiveUsers },
-                { label: 'Reflections', value: s.totalReflections },
+                { label: 'AI Reflections', value: s.totalReflections },
                 { label: 'Notes', value: s.totalNotes },
               ]}
               margin={{ top: 4, right: 4, left: -20, bottom: 0 }}

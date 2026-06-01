@@ -113,7 +113,7 @@ export default function AdminUsersPage() {
                   <SortHeader label="Postcode" k="home_postcode" />
                   <SortHeader label="Registered" k="created_at" />
                   <SortHeader label="Themes" k="themeCount" />
-                  <SortHeader label="Reflections" k="reflectionCount" />
+                  <SortHeader label="AI Reflections" k="reflectionCount" />
                   <th className="px-4 py-3 text-left text-xs font-semibold text-subtext uppercase tracking-wider">Note</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-subtext uppercase tracking-wider">Admin</th>
                 </tr>
