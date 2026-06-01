@@ -11,7 +11,7 @@ import {
   fetchUserSelections,
   generateReflections,
 } from '@/lib/api';
-import { ReflectionCard } from '@/components/ReflectionCard';
+
 import { Colors } from '@/constants/theme';
 import { AppShell } from '@/components/AppShell';
 import { Database } from '@/lib/database.types';
@@ -51,8 +51,12 @@ function PastReflectionGroup({ reflection }: { reflection: Reflection }) {
         <span className="text-xs text-subtext">{expanded ? '▲' : '▼'}</span>
       </button>
       {expanded && (
-        <div className="px-3 pb-3">
-          {texts.map((text, i) => <ReflectionCard key={i} text={text} index={i} />)}
+        <div className="px-4 pb-4">
+          <div className="flex flex-col gap-4">
+            {texts.map((text, i) => (
+              <p key={i} className="text-ink text-base leading-relaxed" style={{ lineHeight: '26px' }}>{text}</p>
+            ))}
+          </div>
         </div>
       )}
     </div>
@@ -137,7 +141,7 @@ export default function ReflectionsPage() {
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-5">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           <p className="font-georgia text-primary text-xl leading-relaxed max-w-sm">
-            {generating ? "We're shaping something thoughtful for you…" : 'Loading your reflections…'}
+            {generating ? "We're shaping something thoughtful for you…" : 'Loading your AI Reflection…'}
           </p>
         </div>
       </AppShell>
@@ -150,7 +154,7 @@ export default function ReflectionsPage() {
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
           <h2 className="font-georgia text-primary text-2xl mb-3">Choose your themes first</h2>
           <p className="text-subtext text-base leading-relaxed mb-8 max-w-md">
-            Head to ADOPT Themes to select your themes, then return here to generate your reflections.
+            Head to ADOPT Themes to select your themes, then return here to generate your AI Reflection.
           </p>
           <Link
             href="/adopt"
@@ -170,7 +174,7 @@ export default function ReflectionsPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
           <div>
-            <h1 className="font-georgia text-primary text-4xl leading-tight">Points of Reflection</h1>
+            <h1 className="font-georgia text-primary text-4xl leading-tight">AI Reflection</h1>
             {latest && (
               <p className="text-subtext text-sm mt-2">Generated {formatDate(latest.generated_at)}</p>
             )}
@@ -186,7 +190,7 @@ export default function ReflectionsPage() {
             {generating ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              atLimit ? 'Monthly limit reached' : latestTexts ? 'Regenerate' : 'Generate Reflections'
+              atLimit ? 'Monthly limit reached' : latestTexts ? 'Regenerate' : 'Generate AI Reflection'
             )}
           </button>
         </div>
@@ -198,12 +202,12 @@ export default function ReflectionsPage() {
         >
           {atLimit ? (
             <p className="text-sm text-ink">
-              You&apos;ve used all {MONTHLY_LIMIT} reflections for this month. Resets in {nextMonthName()}.
+              You&apos;ve used all {MONTHLY_LIMIT} AI Reflections for this month. Resets in {nextMonthName()}.
             </p>
           ) : (
             <>
               <span className="text-sm text-ink">
-                {monthlyCount} of {MONTHLY_LIMIT} reflections used this month
+                {monthlyCount} of {MONTHLY_LIMIT} AI Reflections used this month
               </span>
               <span className="text-sm text-subtext">{remaining} left</span>
             </>
@@ -220,7 +224,7 @@ export default function ReflectionsPage() {
             </p>
             <p>
               That&apos;s why The Common Room uses Claude, an AI tool by Anthropic, to help create
-              personalised Points of Reflection based on the themes you choose.
+              a personalised AI Reflection based on the themes you choose.
             </p>
             <p>
               These reflections are not advice, diagnosis or instruction. They are prompts to help you
@@ -230,7 +234,7 @@ export default function ReflectionsPage() {
             <p className="font-medium text-primary">You are always the expert on your own life.</p>
             <p>
               Read the reflection if it helps. Ignore it if it doesn&apos;t. You can also Regenerate
-              a new reflection up to 6 times per month. Your previous reflections will stay listed
+              a new AI Reflection up to 6 times per month. Your previous AI Reflections will stay listed
               below, so you can return to them whenever you want.
             </p>
           </div>
@@ -240,14 +244,18 @@ export default function ReflectionsPage() {
           <p className="text-error text-sm mb-4">{genError}</p>
         )}
 
-        {/* Latest reflections — 3 across on desktop */}
+        {/* Latest reflection — single box */}
         {latestTexts ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-            {latestTexts.map((text, i) => <ReflectionCard key={i} text={text} index={i} />)}
+          <div className="bg-white rounded-2xl p-6 mb-10 border border-secondary/30 shadow-sm">
+            <div className="flex flex-col gap-4">
+              {latestTexts.map((text, i) => (
+                <p key={i} className="text-ink text-base leading-relaxed" style={{ lineHeight: '26px' }}>{text}</p>
+              ))}
+            </div>
           </div>
         ) : (
           <p className="text-subtext text-sm py-12 text-center">
-            Your reflections will appear here once generated
+            Your AI Reflection will appear here once generated
           </p>
         )}
 
@@ -255,7 +263,7 @@ export default function ReflectionsPage() {
         {past.length > 0 && (
           <div className="mt-4">
             <p className="text-xs font-semibold text-subtext uppercase tracking-wider mb-4">
-              Previous reflections
+              Previous AI Reflections
             </p>
             <div className="flex flex-col gap-2">
               {past.map((r) => <PastReflectionGroup key={r.id} reflection={r} />)}
@@ -268,10 +276,10 @@ export default function ReflectionsPage() {
       {confirmOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-6">
           <div className="bg-background rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="font-georgia text-primary text-lg mb-2">Regenerate reflections?</h3>
+            <h3 className="font-georgia text-primary text-lg mb-2">Regenerate AI Reflection?</h3>
             <p className="text-sm text-ink leading-relaxed mb-6">
-              This will create a new set of 3 reflections and use one of your monthly allowances.
-              Your previous reflections will still be available in history.
+              This will create a new AI Reflection and use one of your monthly allowances.
+              Your previous AI Reflections will still be available in history.
             </p>
             <div className="flex gap-3">
               <button

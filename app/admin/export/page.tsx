@@ -19,8 +19,8 @@ const EXPORT_TYPES: { id: ExportType; label: string; description: string }[] = [
   },
   {
     id: 'reflections',
-    label: 'Reflections',
-    description: 'All generated reflections with content and timestamps',
+    label: 'AI Reflections',
+    description: 'All generated AI Reflections with content and timestamps',
   },
   {
     id: 'notes',
