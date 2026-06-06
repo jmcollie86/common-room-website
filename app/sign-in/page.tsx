@@ -85,12 +85,7 @@ export default function SignInPage() {
             />
           </div>
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-ink">Password</label>
-              <Link href="/forgot-password" className="text-xs text-primary hover:opacity-70 transition-opacity">
-                Forgot password?
-              </Link>
-            </div>
+            <label className="block text-sm font-medium text-ink mb-2">Password</label>
             <input
               type="password"
               value={password}
@@ -99,6 +94,9 @@ export default function SignInPage() {
               autoComplete="current-password"
               className={inputClass}
             />
+            <Link href="/forgot-password" className="text-xs text-primary hover:opacity-70 transition-opacity mt-2 inline-block">
+              Forgot password?
+            </Link>
           </div>
 
           {error && <p className="text-error text-sm">{error}</p>}
