@@ -63,6 +63,12 @@ export default function RegisterPage() {
         year_of_birth: parseInt(yearOfBirth, 10),
         home_postcode: postcode.trim().toUpperCase(),
       });
+
+      fetch('/api/send-welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), name: fullName.trim() }),
+      }).catch(() => {});
     }
 
     setLoading(false);
