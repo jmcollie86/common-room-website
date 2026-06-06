@@ -10,6 +10,11 @@ export default function WelcomePage() {
   const router = useRouter();
 
   useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get('code');
+    if (code) {
+      router.replace(`/reset-password?code=${code}`);
+      return;
+    }
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) {
         // Invalid/expired token — clear session and stay on welcome page
