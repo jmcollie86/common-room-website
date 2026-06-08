@@ -70,8 +70,7 @@ export default function ForgotPasswordPage() {
           <>
             <h1 className="font-georgia text-primary text-3xl xl:text-4xl leading-tight mb-2">Check your inbox</h1>
             <p className="text-subtext text-base mb-6 max-w-md">
-              We&apos;ve sent a password reset link to <span className="text-ink font-medium">{email}</span>.
-              Follow the link in the email to set a new password.
+              If an account exists for <span className="text-ink font-medium">{email}</span>, you&apos;ll receive a reset link shortly.
             </p>
             <p className="text-subtext text-sm max-w-md">
               Didn&apos;t receive it? Check your spam folder, or{' '}
