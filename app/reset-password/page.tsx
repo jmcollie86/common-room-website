@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { CheckCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Colors } from '@/constants/theme';
 
@@ -16,6 +17,7 @@ function ResetPasswordContent() {
   const [error, setError] = useState('');
   const [ready, setReady] = useState(false);
   const [done, setDone] = useState(false);
+  const [countdown, setCountdown] = useState(3);
 
   useEffect(() => {
     const code = searchParams.get('code');
@@ -61,7 +63,15 @@ function ResetPasswordContent() {
       setError("Let's try that again — something went wrong.");
     } else {
       setDone(true);
-      setTimeout(() => router.replace('/sign-in'), 3000);
+      let count = 3;
+      const interval = setInterval(() => {
+        count -= 1;
+        setCountdown(count);
+        if (count === 0) {
+          clearInterval(interval);
+          router.replace('/sign-in');
+        }
+      }, 1000);
     }
   }
 
@@ -78,12 +88,18 @@ function ResetPasswordContent() {
       </div>
 
       {done ? (
-        <>
-          <h1 className="font-georgia text-primary text-3xl xl:text-4xl leading-tight mb-2">Password updated</h1>
-          <p className="text-subtext text-base max-w-md">
-            Your password has been changed. Redirecting you to sign in…
+        <div className="max-w-md">
+          <div className="flex items-center gap-3 mb-4">
+            <CheckCircle size={32} style={{ color: Colors.primary }} strokeWidth={1.5} />
+            <h1 className="font-georgia text-primary text-3xl xl:text-4xl leading-tight">Password updated</h1>
+          </div>
+          <p className="text-subtext text-base">
+            Signing you in{' '}
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs font-semibold">
+              {countdown}
+            </span>
           </p>
-        </>
+        </div>
       ) : error && !ready ? (
         <>
           <h1 className="font-georgia text-primary text-3xl xl:text-4xl leading-tight mb-2">Link expired</h1>
