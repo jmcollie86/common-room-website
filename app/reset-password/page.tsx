@@ -19,16 +19,23 @@ function ResetPasswordContent() {
 
   useEffect(() => {
     const code = searchParams.get('code');
-    if (!code) {
-      setError('This reset link is invalid or has already been used. Please request a new one.');
-      return;
-    }
-    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-      if (error) {
-        setError('This reset link has expired or is invalid. Please request a new one.');
-      } else {
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
         setReady(true);
+        return;
       }
+      if (!code) {
+        setError('This reset link is invalid or has already been used. Please request a new one.');
+        return;
+      }
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (error) {
+          setError('This reset link has expired or is invalid. Please request a new one.');
+        } else {
+          setReady(true);
+        }
+      });
     });
   }, [searchParams]);
 
