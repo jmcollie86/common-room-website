@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   const firstName = name ? name.split(' ')[0] : 'there';
 
   const { error } = await resend.emails.send({
-    from: 'The Common Room <contact@lifework-lab.com>',
+    from: 'The Common Room <onboarding@resend.dev>',
     to: email,
     subject: 'Welcome to The Common Room',
     html: buildEmailHtml(firstName),
