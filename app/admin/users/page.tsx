@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { Colors } from '@/constants/theme';
-import { Search } from 'lucide-react';
+import { Search, Trash2 } from 'lucide-react';
 
 type User = {
   id: string;
@@ -29,6 +29,21 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState('');
   const [sortKey, setSortKey] = useState<keyof User>('created_at');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  async function handleDelete(id: string, name: string | null) {
+    if (!confirm(`Delete ${name ?? 'this user'}? This cannot be undone.`)) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete user');
+      setUsers((prev) => prev.filter((u) => u.id !== id));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to delete user');
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   useEffect(() => {
     fetch('/api/admin/users')
@@ -116,6 +131,7 @@ export default function AdminUsersPage() {
                   <SortHeader label="AI Reflections" k="reflectionCount" />
                   <th className="px-4 py-3 text-left text-xs font-semibold text-subtext uppercase tracking-wider">Note</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-subtext uppercase tracking-wider">Admin</th>
+                  <th className="px-4 py-3" />
                 </tr>
               </thead>
               <tbody>
@@ -154,11 +170,23 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-4 py-3 text-center text-sm">{u.hasNote ? '✓' : '—'}</td>
                     <td className="px-4 py-3 text-center text-sm">{u.is_admin ? '✓' : '—'}</td>
+                    <td className="px-4 py-3 text-center">
+                      <button
+                        onClick={() => handleDelete(u.id, u.full_name)}
+                        disabled={deletingId === u.id || u.is_admin}
+                        title={u.is_admin ? 'Cannot delete admin' : 'Delete user'}
+                        className="p-1.5 rounded-lg text-subtext hover:text-error hover:bg-error/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                      >
+                        {deletingId === u.id
+                          ? <div className="w-4 h-4 border-2 border-error border-t-transparent rounded-full animate-spin" />
+                          : <Trash2 size={15} />}
+                      </button>
+                    </td>
                   </tr>
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={10} className="px-4 py-12 text-center text-sm text-subtext">
+                    <td colSpan={11} className="px-4 py-12 text-center text-sm text-subtext">
                       No users match your search.
                     </td>
                   </tr>
