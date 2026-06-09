@@ -1,29 +1,41 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { Colors } from '@/constants/theme';
 
-const TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+const TIMEOUT_MS = 30 * 60 * 1000;   // 30 minutes
+const WARNING_MS = 28 * 60 * 1000;   // warn at 28 minutes
 
 export function InactivityGuard() {
   const router = useRouter();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const warningTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastActivityRef = useRef<number>(Date.now());
   const isAuthenticatedRef = useRef<boolean>(false);
+  const [showWarning, setShowWarning] = useState(false);
 
   useEffect(() => {
     const signOut = async () => {
       if (!isAuthenticatedRef.current) return;
-      if (timerRef.current) clearTimeout(timerRef.current);
+      clearTimers();
+      setShowWarning(false);
       await supabase.auth.signOut();
       router.replace('/sign-in');
     };
 
+    const clearTimers = () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      if (warningTimerRef.current) clearTimeout(warningTimerRef.current);
+    };
+
     const resetTimer = () => {
       lastActivityRef.current = Date.now();
-      if (timerRef.current) clearTimeout(timerRef.current);
+      clearTimers();
+      setShowWarning(false);
       if (isAuthenticatedRef.current) {
+        warningTimerRef.current = setTimeout(() => setShowWarning(true), WARNING_MS);
         timerRef.current = setTimeout(signOut, TIMEOUT_MS);
       }
     };
@@ -36,8 +48,8 @@ export function InactivityGuard() {
           resetTimer();
         }
       } else {
-        // Tab hidden — pause timer, timestamp records when activity last happened
-        if (timerRef.current) clearTimeout(timerRef.current);
+        // Tab hidden — pause timers, timestamp records when activity last happened
+        clearTimers();
       }
     };
 
@@ -51,7 +63,8 @@ export function InactivityGuard() {
       if (session) {
         resetTimer();
       } else {
-        if (timerRef.current) clearTimeout(timerRef.current);
+        clearTimers();
+        setShowWarning(false);
       }
     });
 
@@ -62,12 +75,39 @@ export function InactivityGuard() {
     });
 
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      clearTimers();
       events.forEach((e) => document.removeEventListener(e, resetTimer));
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       subscription.unsubscribe();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  return null;
+  if (!showWarning) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center px-6"
+      style={{ backgroundColor: 'rgba(0,0,0,0.45)' }}
+    >
+      <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full px-8 py-8 text-center">
+        <h2
+          className="font-georgia text-2xl mb-3"
+          style={{ color: Colors.primary }}
+        >
+          Still there?
+        </h2>
+        <p className="text-base leading-relaxed mb-6" style={{ color: Colors.text }}>
+          You&apos;ll be signed out in 2 minutes due to inactivity. Any unsaved changes will be lost.
+        </p>
+        <button
+          onClick={() => setShowWarning(false)}
+          className="w-full h-12 rounded-xl text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+          style={{ backgroundColor: Colors.primary }}
+        >
+          Stay signed in
+        </button>
+      </div>
+    </div>
+  );
 }
