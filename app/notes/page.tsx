@@ -164,8 +164,8 @@ export default function NotesPage() {
         {/* Header + actions row */}
         <div className="flex items-start justify-between mb-2">
           <div>
-            <h1 className="font-georgia text-primary text-4xl leading-tight">My Note</h1>
-            <p className="text-subtext text-sm mt-2">A private space for your own thoughts</p>
+            <h1 className="font-georgia text-primary text-4xl leading-tight">What I will carry forward</h1>
+            <p className="text-subtext text-sm mt-2 max-w-lg">Use this private space to capture the thoughts, ideas, shifts and small commitments you do not want to lose. This is where reflection starts becoming action.</p>
           </div>
 
           {/* Action buttons */}
