@@ -210,24 +210,17 @@ export default function ReflectionsPage() {
         <div className="rounded-2xl p-6 mb-8" style={{ backgroundColor: Colors.secondary + '25' }}>
           <h2 className="font-georgia text-primary text-xl mb-4">AI Reflection</h2>
           <div className="flex flex-col gap-3 text-sm text-ink leading-relaxed">
+            <p>Your ADOPT choices are unique to you.</p>
             <p>
-              Your ADOPT choices are unique to you. With more than 700 million possible combinations,
-              no fixed set of written reflections could properly respond to every person&apos;s selection.
+              Claude, an AI tool by Anthropic, uses your chosen themes to generate a personal reflection.
             </p>
             <p>
-              That&apos;s why The Common Room uses Claude, an AI tool by Anthropic, to help create
-              a personalised AI Reflection based on the themes you choose.
-            </p>
-            <p>
-              These reflections are not advice, diagnosis or instruction. They are prompts to help you
-              pause, notice patterns, make connections and think more deeply about what your chosen
-              themes might mean for your life, work and next steps.
+              This is not advice, diagnosis or instruction. It is a prompt to help you pause, notice
+              patterns and think more deeply about your life, work and next steps.
             </p>
             <p className="font-medium text-primary">You are always the expert on your own life.</p>
             <p>
-              Read the reflection if it helps. Ignore it if it doesn&apos;t. You can also Regenerate
-              a new AI Reflection up to 6 times per month. Your previous AI Reflections will stay listed
-              below, so you can return to them whenever you want.
+              Read it if it helps. Ignore it if it does not. You can refresh it up to six times each month.
             </p>
           </div>
         </div>
