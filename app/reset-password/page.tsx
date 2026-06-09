@@ -21,8 +21,13 @@ function ResetPasswordContent() {
 
   useEffect(() => {
     const code = searchParams.get('code');
+    const type = searchParams.get('type');
 
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session && type !== 'recovery') {
+        router.replace('/sign-in');
+        return;
+      }
       if (session) {
         setReady(true);
         return;
@@ -31,15 +36,17 @@ function ResetPasswordContent() {
         setError('This reset link is invalid or has already been used. Please request a new one.');
         return;
       }
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+      supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
         if (error) {
           setError('This reset link has expired or is invalid. Please request a new one.');
+        } else if (data.session && type !== 'recovery') {
+          router.replace('/sign-in');
         } else {
           setReady(true);
         }
       });
     });
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
