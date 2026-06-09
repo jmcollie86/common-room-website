@@ -24,17 +24,14 @@ export function ThemeInfoModal({ theme, onClose }: ThemeInfoModalProps) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/45 flex items-end justify-center z-50"
+      className="fixed inset-0 bg-black/45 flex items-center justify-center z-50 px-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-background rounded-t-3xl max-h-[82vh] flex flex-col"
+        className="w-full max-w-lg bg-background rounded-3xl max-h-[82vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Drag handle */}
-        <div className="flex justify-center pt-3 pb-1">
-          <div className="w-9 h-1 rounded-full" style={{ backgroundColor: Colors.subtext + '50' }} />
-        </div>
+        <div className="pt-5" />
 
         {/* Category header */}
         <div
@@ -65,7 +62,7 @@ export function ThemeInfoModal({ theme, onClose }: ThemeInfoModalProps) {
         </div>
 
         {/* Close */}
-        <div className="px-5 pb-8 pt-2">
+        <div className="px-5 pb-5 pt-2">
           <button
             onClick={onClose}
             className="w-full flex items-center justify-center min-h-[50px] rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity"
