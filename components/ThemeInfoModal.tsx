@@ -49,9 +49,6 @@ export function ThemeInfoModal({ theme, onClose }: ThemeInfoModalProps) {
         <div className="flex-1 overflow-y-auto px-5 pb-4">
           {theme.description && (
             <div className="mb-5">
-              <p className="text-xs font-semibold text-subtext uppercase tracking-wider mb-2">
-                In your own words
-              </p>
               <p className="font-georgia text-base text-ink leading-relaxed italic">
                 {theme.description}
               </p>
@@ -60,9 +57,6 @@ export function ThemeInfoModal({ theme, onClose }: ThemeInfoModalProps) {
 
           {theme.third_person_description && (
             <div className="mb-6">
-              <p className="text-xs font-semibold text-subtext uppercase tracking-wider mb-2">
-                What this means
-              </p>
               <p className="text-sm text-ink leading-relaxed">
                 {theme.third_person_description}
               </p>
