@@ -172,25 +172,17 @@ export default function ReflectionsPage() {
       <div className="max-w-5xl mx-auto px-8 py-10">
 
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
-          <div>
-            <h1 className="font-georgia text-primary text-4xl leading-tight">AI Reflection</h1>
-            {latest && (
-              <p className="text-subtext text-sm mt-2">Generated {formatDate(latest.generated_at)}</p>
-            )}
-          </div>
-
-          {/* Generate button inline in header */}
+        <div className="flex justify-end mb-6">
           <button
             onClick={confirmGenerate}
             disabled={generating || atLimit}
-            className="self-start md:self-auto flex items-center justify-center h-11 px-7 rounded-xl text-sm font-semibold transition-opacity disabled:opacity-60 shrink-0"
+            className="flex items-center justify-center h-11 px-7 rounded-xl text-sm font-semibold transition-opacity disabled:opacity-60 shrink-0"
             style={{ backgroundColor: atLimit ? Colors.subtext + '80' : Colors.primary, color: 'white' }}
           >
             {generating ? (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              atLimit ? 'Monthly limit reached' : latestTexts ? 'Regenerate' : 'Generate AI Reflection'
+              atLimit ? 'Monthly limit reached' : latestTexts ? 'Regenerate' : 'Generate'
             )}
           </button>
         </div>
@@ -246,12 +238,18 @@ export default function ReflectionsPage() {
 
         {/* Latest reflection — single box */}
         {latestTexts ? (
-          <div className="bg-white rounded-2xl p-6 mb-10 border border-secondary/30 shadow-sm">
+          <div className="mb-10">
+          <h1 className="font-georgia text-primary text-3xl leading-tight mb-1">What Claude noticed in your ADOPTs</h1>
+          {latest && (
+            <p className="text-subtext text-sm mb-4">Generated {formatDate(latest.generated_at)}</p>
+          )}
+          <div className="bg-white rounded-2xl p-6 border border-secondary/30 shadow-sm">
             <div className="flex flex-col gap-4">
               {latestTexts.map((text, i) => (
                 <p key={i} className="text-ink text-base leading-relaxed" style={{ lineHeight: '26px' }}>{text}</p>
               ))}
             </div>
+          </div>
           </div>
         ) : (
           <p className="text-subtext text-sm py-12 text-center">
