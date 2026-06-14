@@ -166,6 +166,7 @@ export default function NotesPage() {
           <div>
             <h1 className="font-georgia text-primary text-4xl leading-tight">What I will carry forward</h1>
             <p className="text-subtext text-sm mt-2 max-w-lg">Use this private space to capture the thoughts, ideas, shifts and small commitments you do not want to lose. This is where reflection starts becoming action.</p>
+            <p className="text-subtext text-sm mt-2 max-w-lg">A note on privacy: this space is personal to you, though it is accessible to The Common Room&apos;s administrators. Please treat it as a reflective journal rather than a place for sensitive personal details.</p>
           </div>
 
           {/* Action buttons */}
