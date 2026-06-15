@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Colors } from '@/constants/theme';
+import { PrivacyNotice } from '@/components/PrivacyNotice';
 
 const GENDER_OPTIONS = ['Woman', 'Man', 'Non-binary', 'Prefer not to say'];
 
@@ -237,6 +238,10 @@ export default function RegisterPage() {
           Already have an account?{' '}
           <Link href="/sign-in" className="text-primary hover:opacity-70 transition-opacity">Sign in</Link>
         </p>
+
+        <div className="mt-10 max-w-md">
+          <PrivacyNotice />
+        </div>
 
       </div>
     </div>

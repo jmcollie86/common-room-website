@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Colors } from '@/constants/theme';
+import { PrivacyNotice } from '@/components/PrivacyNotice';
 
 export default function SignInPage() {
   const router = useRouter();
@@ -114,6 +115,10 @@ export default function SignInPage() {
           Don&apos;t have an account?{' '}
           <Link href="/register" className="text-primary hover:opacity-70 transition-opacity">Get started</Link>
         </p>
+
+        <div className="mt-10 max-w-md">
+          <PrivacyNotice />
+        </div>
       </div>
     </div>
   );
