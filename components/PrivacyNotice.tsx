@@ -149,7 +149,8 @@ export function PrivacyNotice() {
       </div>
 
       <p className="mt-5 text-[12.5px] text-subtext leading-relaxed text-center">
-        The Common Room is run by Lifework Lab · Data controller: Jonathan Collie
+        The Common Room is run by Lifework Lab · Data controller: Jonathan Collie<br />
+        <a href="/privacy" className="text-primary underline underline-offset-2">Full privacy policy</a>
       </p>
     </div>
   );

@@ -26,12 +26,12 @@ export default function RegisterPage() {
     if (!fullName.trim()) return 'Please enter your name.';
     if (!email.trim()) return 'Please enter your email.';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return 'Please enter a valid email address.';
-    if (!gender) return 'Please select a gender option.';
-    const year = parseInt(yearOfBirth, 10);
-    if (!yearOfBirth || isNaN(year) || year < 1920 || year > new Date().getFullYear() - 16) {
-      return 'Please enter a valid year of birth.';
+    if (yearOfBirth) {
+      const year = parseInt(yearOfBirth, 10);
+      if (isNaN(year) || year < 1920 || year > new Date().getFullYear() - 16) {
+        return 'Please enter a valid year of birth.';
+      }
     }
-    if (!postcode.trim()) return 'Please enter your home postcode.';
     if (password.length < 8) return 'Password must be at least 8 characters.';
     if (password !== confirmPassword) return 'Passwords do not match.';
     return null;
@@ -60,9 +60,9 @@ export default function RegisterPage() {
       await supabase.from('profiles').upsert({
         id: data.user.id,
         full_name: fullName.trim(),
-        gender,
-        year_of_birth: parseInt(yearOfBirth, 10),
-        home_postcode: postcode.trim().toUpperCase(),
+        gender: gender || null,
+        year_of_birth: yearOfBirth ? parseInt(yearOfBirth, 10) : null,
+        home_postcode: postcode.trim() ? postcode.trim().toUpperCase() : null,
       });
 
 }
@@ -160,7 +160,7 @@ export default function RegisterPage() {
             />
           </Field>
 
-          <Field label="Gender">
+          <Field label="Gender" optional>
             <div className="flex flex-wrap gap-2">
               {GENDER_OPTIONS.map((option) => (
                 <button
@@ -179,7 +179,7 @@ export default function RegisterPage() {
             </div>
           </Field>
 
-          <Field label="Year of birth">
+          <Field label="Year of birth" optional>
             <input
               type="text"
               inputMode="numeric"
@@ -191,7 +191,7 @@ export default function RegisterPage() {
             />
           </Field>
 
-          <Field label="Home postcode">
+          <Field label="Home postcode" optional>
             <input
               type="text"
               value={postcode}
@@ -248,10 +248,13 @@ export default function RegisterPage() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, optional, children }: { label: string; optional?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-ink mb-2">{label}</label>
+      <label className="block text-sm font-medium text-ink mb-2">
+        {label}
+        {optional && <span className="ml-1.5 text-xs font-normal text-subtext">(optional)</span>}
+      </label>
       {children}
     </div>
   );
