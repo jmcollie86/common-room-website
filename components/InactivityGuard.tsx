@@ -7,12 +7,14 @@ import { Colors } from '@/constants/theme';
 
 const TIMEOUT_MS = 30 * 60 * 1000;   // 30 minutes
 const WARNING_MS = 28 * 60 * 1000;   // warn at 28 minutes
+const STORAGE_KEY = 'tcr_last_activity';
 
 export function InactivityGuard() {
   const router = useRouter();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const warningTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastActivityRef = useRef<number>(Date.now());
+  const stored = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
+  const lastActivityRef = useRef<number>(stored ? Number(stored) : Date.now());
   const isAuthenticatedRef = useRef<boolean>(false);
   const [showWarning, setShowWarning] = useState(false);
 
@@ -21,6 +23,7 @@ export function InactivityGuard() {
       if (!isAuthenticatedRef.current) return;
       clearTimers();
       setShowWarning(false);
+      localStorage.removeItem(STORAGE_KEY);
       await supabase.auth.signOut();
       router.replace('/sign-in');
     };
@@ -31,7 +34,9 @@ export function InactivityGuard() {
     };
 
     const resetTimer = () => {
-      lastActivityRef.current = Date.now();
+      const now = Date.now();
+      lastActivityRef.current = now;
+      localStorage.setItem(STORAGE_KEY, String(now));
       clearTimers();
       setShowWarning(false);
       if (isAuthenticatedRef.current) {
@@ -68,10 +73,17 @@ export function InactivityGuard() {
       }
     });
 
-    // Seed initial auth state
+    // Seed initial auth state — check localStorage to catch stale sessions from closed browsers
     supabase.auth.getSession().then(({ data: { session } }) => {
       isAuthenticatedRef.current = !!session;
-      if (session) resetTimer();
+      if (session) {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored && Date.now() - Number(stored) >= TIMEOUT_MS) {
+          signOut();
+        } else {
+          resetTimer();
+        }
+      }
     });
 
     return () => {
