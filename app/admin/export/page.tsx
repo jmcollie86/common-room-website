@@ -73,7 +73,7 @@ export default function AdminExportPage() {
   const today = new Date().toISOString().slice(0, 10);
 
   return (
-    <div className="max-w-3xl mx-auto px-8 py-10">
+    <div className="max-w-3xl mx-auto px-4 md:px-8 py-6 md:py-10">
       <h1 className="font-georgia text-primary text-4xl leading-tight mb-2">Export</h1>
       <p className="text-subtext text-sm mb-10">
         Download data as CSV files. All exports respect the date range you set.
