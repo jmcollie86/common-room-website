@@ -120,7 +120,7 @@ export default function AdminThemesPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-8 py-10">
+    <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
       <h1 className="font-georgia text-primary text-4xl leading-tight mb-2">Themes</h1>
       <p className="text-subtext text-sm mb-8">
         {totalSelections} total selections across {themes.length} themes
