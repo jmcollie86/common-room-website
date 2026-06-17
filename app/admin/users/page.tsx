@@ -88,14 +88,14 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="max-w-full px-8 py-10">
-      <div className="flex items-end justify-between mb-6">
+    <div className="max-w-full px-4 md:px-8 py-6 md:py-10">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-6">
         <div>
           <h1 className="font-georgia text-primary text-4xl leading-tight">Users</h1>
           <p className="text-subtext text-sm mt-2">{users.length} registered</p>
         </div>
 
-        <div className="flex items-center bg-white border-[1.5px] border-secondary rounded-xl px-4 min-h-[44px] gap-2 focus-within:border-primary transition-colors w-72">
+        <div className="flex items-center bg-white border-[1.5px] border-secondary rounded-xl px-4 min-h-[44px] gap-2 focus-within:border-primary transition-colors w-full md:w-72">
           <Search size={16} color={Colors.subtext} />
           <input
             type="search"
