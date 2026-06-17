@@ -96,10 +96,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="fixed inset-0 bg-black/40 z-30 lg:hidden" onClick={() => setMobileOpen(false)} />
       )}
 
-      <aside className="fixed inset-y-0 left-0 w-64 lg:w-56 xl:w-64 flex flex-col bg-white z-40 b-r">
-        <div className={`flex flex-col h-full ${mobileOpen ? 'flex' : 'hidden lg:flex'}`}>
-          {sidebarContent}
-        </div>
+      <aside className={`fixed inset-y-0 left-0 w-64 lg:w-56 xl:w-64 flex flex-col bg-white z-40 b-r transition-transform duration-200 ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        {sidebarContent}
       </aside>
 
       <main className="flex-1 min-h-screen overflow-y-auto lg:ml-56 xl:ml-64">
