@@ -40,7 +40,7 @@ export default function PrivacyPage() {
     <div className="min-h-screen bg-background px-6 py-12">
       <div className="max-w-2xl mx-auto">
 
-        <Link href="/" className="text-primary text-sm mb-8 inline-flex items-center gap-1 hover:opacity-70 transition-opacity">
+        <Link href="/" className="text-primary text-sm mb-12 inline-flex items-center gap-1 hover:opacity-70 transition-opacity">
           ← Back
         </Link>
 
