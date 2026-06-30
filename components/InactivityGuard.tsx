@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Colors } from '@/constants/theme';
+
+const AUTH_PATHS = ['/reset-password', '/forgot-password', '/sign-in', '/register'];
 
 const TIMEOUT_MS = 30 * 60 * 1000;   // 30 minutes
 const WARNING_MS = 28 * 60 * 1000;   // warn at 28 minutes
@@ -11,6 +13,7 @@ const STORAGE_KEY = 'tcr_last_activity';
 
 export function InactivityGuard() {
   const router = useRouter();
+  const pathname = usePathname();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const warningTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stored = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
@@ -21,6 +24,7 @@ export function InactivityGuard() {
   useEffect(() => {
     const signOut = async () => {
       if (!isAuthenticatedRef.current) return;
+      if (AUTH_PATHS.some((p) => pathname.startsWith(p))) return;
       clearTimers();
       setShowWarning(false);
       localStorage.removeItem(STORAGE_KEY);
@@ -93,7 +97,7 @@ export function InactivityGuard() {
       subscription.unsubscribe();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
+  }, [router, pathname]);
 
   if (!showWarning) return null;
 
