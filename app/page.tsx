@@ -10,9 +10,17 @@ export default function WelcomePage() {
   const router = useRouter();
 
   useEffect(() => {
+    // Email-confirmation links land here with ?code= (password-reset links go
+    // straight to /reset-password via their redirectTo).
     const code = new URLSearchParams(window.location.search).get('code');
     if (code) {
-      router.replace(`/reset-password?code=${code}`);
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (error) {
+          window.history.replaceState(null, '', '/');
+          return;
+        }
+        router.replace('/dashboard');
+      });
       return;
     }
     supabase.auth.getSession().then(({ data: { session }, error }) => {
