@@ -94,7 +94,13 @@ export default function AdminThemesPage() {
 
   function copyEmails() {
     if (!emailResult) return;
-    navigator.clipboard.writeText(emailResult.map((u) => u.email).join('\n'));
+    // Include the name in the standard "Name <email>" recipient format so it
+    // survives the copy (and still pastes into an email client's To/BCC field).
+    // Falls back to a bare email when the user has no stored name.
+    const text = emailResult
+      .map((u) => (u.name ? `${u.name} <${u.email}>` : u.email))
+      .join('\n');
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
