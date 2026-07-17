@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { ensureProfile } from '@/lib/profile';
 import { Colors } from '@/constants/theme';
 
 export default function WelcomePage() {
@@ -14,11 +15,14 @@ export default function WelcomePage() {
     // straight to /reset-password via their redirectTo).
     const code = new URLSearchParams(window.location.search).get('code');
     if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+      supabase.auth.exchangeCodeForSession(code).then(async ({ error }) => {
         if (error) {
           window.history.replaceState(null, '', '/');
           return;
         }
+        // First session after email confirmation — materialise the profile row
+        // from the metadata captured at sign-up.
+        await ensureProfile();
         router.replace('/dashboard');
       });
       return;
