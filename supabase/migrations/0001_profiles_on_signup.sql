@@ -13,15 +13,30 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, full_name, gender, year_of_birth, home_postcode)
-  values (
-    new.id,
-    nullif(new.raw_user_meta_data ->> 'full_name', ''),
-    nullif(new.raw_user_meta_data ->> 'gender', ''),
-    (new.raw_user_meta_data ->> 'year_of_birth')::int,
-    nullif(new.raw_user_meta_data ->> 'home_postcode', '')
-  )
-  on conflict (id) do nothing;
+  -- This runs inside the auth.users INSERT transaction. Any unhandled error
+  -- here would roll back the signup, so the profile insert is wrapped in its
+  -- own block: on failure we log a warning and still return NEW, so profile
+  -- creation can never block a user from signing up.
+  begin
+    insert into public.profiles (id, full_name, gender, year_of_birth, home_postcode)
+    values (
+      new.id,
+      nullif(new.raw_user_meta_data ->> 'full_name', ''),
+      nullif(new.raw_user_meta_data ->> 'gender', ''),
+      -- Only cast when the value is all digits; a non-numeric value would
+      -- otherwise raise "invalid input syntax for type integer".
+      case
+        when new.raw_user_meta_data ->> 'year_of_birth' ~ '^\d+$'
+          then (new.raw_user_meta_data ->> 'year_of_birth')::int
+        else null
+      end,
+      nullif(new.raw_user_meta_data ->> 'home_postcode', '')
+    )
+    on conflict (id) do nothing;
+  exception
+    when others then
+      raise warning 'handle_new_user: could not create profile for %: %', new.id, sqlerrm;
+  end;
   return new;
 end;
 $$;
@@ -42,7 +57,11 @@ select
   u.id,
   nullif(u.raw_user_meta_data ->> 'full_name', ''),
   nullif(u.raw_user_meta_data ->> 'gender', ''),
-  (u.raw_user_meta_data ->> 'year_of_birth')::int,
+  case
+    when u.raw_user_meta_data ->> 'year_of_birth' ~ '^\d+$'
+      then (u.raw_user_meta_data ->> 'year_of_birth')::int
+    else null
+  end,
   nullif(u.raw_user_meta_data ->> 'home_postcode', '')
 from auth.users u
 left join public.profiles p on p.id = u.id
