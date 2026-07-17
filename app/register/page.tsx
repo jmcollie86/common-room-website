@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { ensureProfile } from '@/lib/profile';
 import { Colors } from '@/constants/theme';
 import { PrivacyNotice } from '@/components/PrivacyNotice';
 
@@ -45,9 +46,21 @@ export default function RegisterPage() {
     setLoading(true);
     setError('');
 
+    const profileData = {
+      full_name: fullName.trim(),
+      gender: gender || null,
+      year_of_birth: yearOfBirth ? parseInt(yearOfBirth, 10) : null,
+      home_postcode: postcode.trim() ? postcode.trim().toUpperCase() : null,
+    };
+
+    // Stash the profile fields in auth user_metadata. With email confirmation
+    // on, signUp returns no session, so a direct `profiles` write here would be
+    // rejected by RLS. The row is created from this metadata once the user has
+    // a session (see ensureProfile, called after email confirmation / sign-in).
     const { data, error: signUpError } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),
       password,
+      options: { data: profileData },
     });
 
     if (signUpError) {
@@ -56,16 +69,10 @@ export default function RegisterPage() {
       return;
     }
 
-    if (data.user) {
-      await supabase.from('profiles').upsert({
-        id: data.user.id,
-        full_name: fullName.trim(),
-        gender: gender || null,
-        year_of_birth: yearOfBirth ? parseInt(yearOfBirth, 10) : null,
-        home_postcode: postcode.trim() ? postcode.trim().toUpperCase() : null,
-      });
-
-}
+    // If confirmation is off, we already have a session — create the row now.
+    if (data.session) {
+      await ensureProfile();
+    }
 
     setLoading(false);
 

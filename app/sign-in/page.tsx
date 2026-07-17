@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { ensureProfile } from '@/lib/profile';
 import { Colors } from '@/constants/theme';
 import { PrivacyNotice } from '@/components/PrivacyNotice';
 
@@ -26,10 +27,14 @@ export default function SignInPage() {
       email: email.trim().toLowerCase(),
       password,
     });
-    setLoading(false);
     if (error) {
+      setLoading(false);
       setError("Let's try that again — please check your email and password.");
     } else {
+      // Backfill the profile row for anyone who registered before it was
+      // created reliably (no-op once the row exists).
+      await ensureProfile();
+      setLoading(false);
       router.replace('/dashboard');
     }
   }
