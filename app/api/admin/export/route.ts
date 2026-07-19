@@ -8,14 +8,23 @@ function toCSV(rows: Record<string, unknown>[]): string {
   const headers = Object.keys(rows[0]);
   const escape = (v: unknown) => {
     const s = v == null ? '' : String(v);
-    return s.includes(',') || s.includes('"') || s.includes('\n')
+    return /[",\r\n]/.test(s)
       ? `"${s.replace(/"/g, '""')}"`
       : s;
   };
+  // CRLF line endings for Excel/Windows compatibility.
   return [
     headers.join(','),
     ...rows.map((r) => headers.map((h) => escape(r[h])).join(',')),
-  ].join('\n');
+  ].join('\r\n');
+}
+
+// Wrap a CSV body so Excel opens it cleanly regardless of the user's locale:
+//  - UTF-8 BOM  -> em-dashes / smart quotes render instead of garbling
+//  - `sep=,`    -> forces comma delimiter even when Excel's locale expects `;`
+//                  (otherwise every row lands in a single column)
+function forExcel(csv: string): string {
+  return '\uFEFF' + 'sep=,\r\n' + csv;
 }
 
 const EXPORT_LIMIT = 5000;
@@ -146,7 +155,7 @@ export async function GET(req: NextRequest) {
     filename = `tcr-notes-${from ?? 'all'}-to-${to ?? 'now'}`;
   }
 
-  return new Response(csv, {
+  return new Response(forExcel(csv), {
     headers: {
       'Content-Type': 'text/csv; charset=utf-8',
       'Content-Disposition': `attachment; filename="${filename}.csv"`,
