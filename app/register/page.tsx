@@ -22,6 +22,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [emailSent, setEmailSent] = useState(false);
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
   function validate(): string | null {
     if (!fullName.trim()) return 'Please enter your name.';
@@ -60,12 +61,29 @@ export default function RegisterPage() {
     const { data, error: signUpError } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),
       password,
-      options: { data: profileData },
+      options: {
+        data: profileData,
+        // Belt-and-braces: the confirmation email currently builds its link from
+        // {{ .SiteURL }}/auth/confirm (token_hash flow), so this is not used today.
+        // It only takes effect if the template is ever reverted to
+        // {{ .ConfirmationURL }}, in which case the link returns to this origin.
+        emailRedirectTo: window.location.origin,
+      },
     });
 
     if (signUpError) {
       setLoading(false);
       setError("Let's try that again — we couldn't create your account.");
+      return;
+    }
+
+    // Anti-enumeration: when the email is already registered AND confirmed,
+    // Supabase returns a fake-success with an obfuscated user that has an empty
+    // `identities` array (and no session). Detect that so we point the user to
+    // sign in, instead of telling them to check an inbox that gets no email.
+    if (!data.session && data.user && (data.user.identities?.length ?? 0) === 0) {
+      setLoading(false);
+      setAlreadyRegistered(true);
       return;
     }
 
@@ -81,6 +99,35 @@ export default function RegisterPage() {
     } else {
       router.replace('/dashboard');
     }
+  }
+
+  if (alreadyRegistered) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+        <div className="max-w-lg w-full text-center">
+          <h1 className="font-georgia text-primary text-[26px] mb-4">You may already have an account</h1>
+          <p className="text-ink text-base leading-relaxed mb-8">
+            An account already exists for <span className="font-semibold">{email}</span>.
+            <br /><br />
+            Try signing in instead — or reset your password if you&apos;ve forgotten it.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/sign-in"
+              className="inline-flex items-center justify-center min-h-[52px] px-8 rounded-2xl bg-primary text-white text-base font-semibold hover:opacity-90 transition-opacity"
+            >
+              Go to Sign In
+            </Link>
+            <Link
+              href="/forgot-password"
+              className="inline-flex items-center justify-center min-h-[52px] px-8 rounded-2xl border-[1.5px] border-primary/25 text-primary text-base font-semibold hover:bg-primary/5 transition-colors"
+            >
+              Reset password
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (emailSent) {
