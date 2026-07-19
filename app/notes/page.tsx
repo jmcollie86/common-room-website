@@ -161,8 +161,8 @@ export default function NotesPage() {
     <AppShell active="notes">
       <div className="max-w-4xl mx-auto px-8 py-10">
 
-        {/* Header + actions row */}
-        <div className="flex items-start justify-between mb-2">
+        {/* Header + actions row — stacks on mobile so guidance spans the full width */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-2">
           <div>
             <h1 className="font-georgia text-primary text-4xl leading-tight">What I will carry forward</h1>
             <p className="text-subtext text-sm mt-2 max-w-lg">Use this private space to capture the thoughts, ideas, shifts and small commitments you do not want to lose. This is where reflection starts becoming action.</p>
@@ -170,7 +170,7 @@ export default function NotesPage() {
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 md:shrink-0">
             <span
               className="text-xs mr-2"
               style={{
