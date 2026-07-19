@@ -3,12 +3,17 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Check, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { ensureProfile } from '@/lib/profile';
 import { Colors } from '@/constants/theme';
 import { PrivacyNotice } from '@/components/PrivacyNotice';
+import { FormAlert } from '@/components/FormAlert';
+import { checkPassword, describeAuthError, MIN_PASSWORD_LENGTH, passwordMeetsRules } from '@/lib/auth-errors';
 
 const GENDER_OPTIONS = ['Woman', 'Man', 'Non-binary', 'Prefer not to say'];
+
+type FieldErrors = Partial<Record<'fullName' | 'email' | 'yearOfBirth' | 'password' | 'confirmPassword', string>>;
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -21,28 +26,70 @@ export default function RegisterPage() {
   const [postcode, setPostcode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [showPassword, setShowPassword] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
-  function validate(): string | null {
-    if (!fullName.trim()) return 'Please enter your name.';
-    if (!email.trim()) return 'Please enter your email.';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return 'Please enter a valid email address.';
+  const passwordRules = checkPassword(password);
+
+  /** Clear a field's error as soon as the user starts fixing it. */
+  function clearFieldError(field: keyof FieldErrors) {
+    setFieldErrors((current) => {
+      if (!current[field]) return current;
+      const next = { ...current };
+      delete next[field];
+      return next;
+    });
+  }
+
+  /**
+   * Collects every problem at once. Returning on the first failure meant
+   * fixing one field only to discover the next, one submit at a time.
+   */
+  function validate(): FieldErrors {
+    const errors: FieldErrors = {};
+
+    if (!fullName.trim()) errors.fullName = 'Please enter your name.';
+
+    if (!email.trim()) {
+      errors.email = 'Please enter your email.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      errors.email = 'That does not look like a valid email address.';
+    }
+
     if (yearOfBirth) {
       const year = parseInt(yearOfBirth, 10);
-      if (isNaN(year) || year < 1920 || year > new Date().getFullYear() - 16) {
-        return 'Please enter a valid year of birth.';
+      const latest = new Date().getFullYear() - 16;
+      if (isNaN(year) || year < 1920 || year > latest) {
+        errors.yearOfBirth = `Please enter a year between 1920 and ${latest}.`;
       }
     }
-    if (password.length < 8) return 'Password must be at least 8 characters.';
-    if (password !== confirmPassword) return 'Passwords do not match.';
-    return null;
+
+    if (!password) {
+      errors.password = 'Please choose a password.';
+    } else if (!passwordMeetsRules(password)) {
+      errors.password = `Your password needs to be at least ${MIN_PASSWORD_LENGTH} characters.`;
+    }
+
+    if (!confirmPassword) {
+      errors.confirmPassword = 'Please confirm your password.';
+    } else if (password !== confirmPassword) {
+      errors.confirmPassword = 'These passwords do not match.';
+    }
+
+    return errors;
   }
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
-    const validationError = validate();
-    if (validationError) { setError(validationError); return; }
+
+    const errors = validate();
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      setError('');
+      return;
+    }
 
     setLoading(true);
     setError('');
@@ -73,7 +120,21 @@ export default function RegisterPage() {
 
     if (signUpError) {
       setLoading(false);
-      setError("Let's try that again — we couldn't create your account.");
+
+      const info = describeAuthError(signUpError);
+
+      // Supabase already told us which email addresses are taken; treat that
+      // like the anti-enumeration case below and send them to sign in.
+      if (info.suggestSignIn) {
+        setAlreadyRegistered(true);
+        return;
+      }
+
+      if (info.field) {
+        setFieldErrors({ [info.field]: info.message });
+      } else {
+        setError(info.message);
+      }
       return;
     }
 
@@ -192,25 +253,27 @@ export default function RegisterPage() {
 
         <form onSubmit={handleRegister} className="flex flex-col gap-5 max-w-md">
 
-          <Field label="Full name">
+          <Field label="Full name" error={fieldErrors.fullName}>
             <input
               type="text"
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              onChange={(e) => { setFullName(e.target.value); clearFieldError('fullName'); }}
               placeholder="Your full name"
               autoComplete="name"
-              className={inputClass}
+              aria-invalid={!!fieldErrors.fullName}
+              className={fieldErrors.fullName ? inputErrorClass : inputClass}
             />
           </Field>
 
-          <Field label="Email">
+          <Field label="Email" error={fieldErrors.email}>
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => { setEmail(e.target.value); clearFieldError('email'); }}
               placeholder="your@email.com"
               autoComplete="email"
-              className={inputClass}
+              aria-invalid={!!fieldErrors.email}
+              className={fieldErrors.email ? inputErrorClass : inputClass}
             />
           </Field>
 
@@ -233,15 +296,19 @@ export default function RegisterPage() {
             </div>
           </Field>
 
-          <Field label="Year of birth" optional>
+          <Field label="Year of birth" optional error={fieldErrors.yearOfBirth}>
             <input
               type="text"
               inputMode="numeric"
               value={yearOfBirth}
-              onChange={(e) => setYearOfBirth(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
+              onChange={(e) => {
+                setYearOfBirth(e.target.value.replace(/[^0-9]/g, '').slice(0, 4));
+                clearFieldError('yearOfBirth');
+              }}
               placeholder="e.g. 1978"
               maxLength={4}
-              className={inputClass}
+              aria-invalid={!!fieldErrors.yearOfBirth}
+              className={fieldErrors.yearOfBirth ? inputErrorClass : inputClass}
             />
           </Field>
 
@@ -255,29 +322,63 @@ export default function RegisterPage() {
             />
           </Field>
 
-          <Field label="Password">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 8 characters"
-              autoComplete="new-password"
-              className={inputClass}
-            />
+          <Field label="Password" error={fieldErrors.password}>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => { setPassword(e.target.value); clearFieldError('password'); }}
+                placeholder={`At least ${MIN_PASSWORD_LENGTH} characters`}
+                autoComplete="new-password"
+                aria-invalid={!!fieldErrors.password}
+                className={`${fieldErrors.password ? inputErrorClass : inputClass} pr-12`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((shown) => !shown)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-subtext hover:text-primary transition-colors"
+              >
+                {showPassword ? <EyeOff size={18} strokeWidth={1.75} /> : <Eye size={18} strokeWidth={1.75} />}
+              </button>
+            </div>
+
+            {password && (
+              <ul className="mt-2.5 flex flex-col gap-1">
+                {passwordRules.map((rule) => (
+                  <li
+                    key={rule.id}
+                    className={`flex items-center gap-1.5 text-xs ${rule.met ? 'text-primary' : 'text-subtext'}`}
+                  >
+                    <span
+                      className={`flex items-center justify-center w-3.5 h-3.5 rounded-full shrink-0 ${
+                        rule.met ? 'bg-primary text-white' : 'border border-secondary'
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {rule.met && <Check size={9} strokeWidth={3} />}
+                    </span>
+                    {rule.label}
+                    {!rule.required && <span className="text-subtext">— recommended</span>}
+                  </li>
+                ))}
+              </ul>
+            )}
           </Field>
 
-          <Field label="Confirm password">
+          <Field label="Confirm password" error={fieldErrors.confirmPassword}>
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => { setConfirmPassword(e.target.value); clearFieldError('confirmPassword'); }}
               placeholder="Repeat your password"
               autoComplete="new-password"
-              className={inputClass}
+              aria-invalid={!!fieldErrors.confirmPassword}
+              className={fieldErrors.confirmPassword ? inputErrorClass : inputClass}
             />
           </Field>
 
-          {error && <p className="text-error text-sm">{error}</p>}
+          {error && <FormAlert>{error}</FormAlert>}
 
           <button
             type="submit"
@@ -302,7 +403,19 @@ export default function RegisterPage() {
   );
 }
 
-function Field({ label, optional, children }: { label: string; optional?: boolean; children: React.ReactNode }) {
+function Field({
+  label,
+  optional,
+  error,
+  hint,
+  children,
+}: {
+  label: string;
+  optional?: boolean;
+  error?: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <label className="block text-sm font-medium text-ink mb-2">
@@ -310,9 +423,19 @@ function Field({ label, optional, children }: { label: string; optional?: boolea
         {optional && <span className="ml-1.5 text-xs font-normal text-subtext">(optional)</span>}
       </label>
       {children}
+      {hint && !error && <p className="mt-1.5 text-xs text-subtext">{hint}</p>}
+      {error && (
+        <p role="alert" className="mt-1.5 text-sm text-error">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
 
 const inputClass =
   'w-full min-h-[52px] bg-white border-[1.5px] border-secondary rounded-xl px-4 text-base text-ink placeholder:text-subtext focus:outline-none focus:border-primary transition-colors';
+
+/** Same shape as `inputClass`, but flags the field that needs attention. */
+const inputErrorClass =
+  'w-full min-h-[52px] bg-white border-[1.5px] border-error rounded-xl px-4 text-base text-ink placeholder:text-subtext focus:outline-none focus:border-error transition-colors';

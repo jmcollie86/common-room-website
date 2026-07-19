@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Colors } from '@/constants/theme';
+import { FormAlert } from '@/components/FormAlert';
+import { describeAuthError } from '@/lib/auth-errors';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -24,7 +26,7 @@ export default function ForgotPasswordPage() {
     });
     setLoading(false);
     if (error) {
-      setError("Let's try that again — something went wrong.");
+      setError(describeAuthError(error).message);
     } else {
       setSent(true);
     }
@@ -100,7 +102,7 @@ export default function ForgotPasswordPage() {
                 />
               </div>
 
-              {error && <p className="text-error text-sm">{error}</p>}
+              {error && <FormAlert>{error}</FormAlert>}
 
               <button
                 type="submit"

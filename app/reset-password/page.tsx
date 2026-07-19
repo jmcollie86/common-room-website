@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Colors } from '@/constants/theme';
+import { FormAlert } from '@/components/FormAlert';
+import { describeAuthError, MIN_PASSWORD_LENGTH, passwordMeetsRules } from '@/lib/auth-errors';
 
 function ResetPasswordContent() {
   const router = useRouter();
@@ -47,12 +49,12 @@ function ResetPasswordContent() {
       setError('Please fill in both fields.');
       return;
     }
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
+    if (!passwordMeetsRules(password)) {
+      setError(`Your password needs to be at least ${MIN_PASSWORD_LENGTH} characters.`);
       return;
     }
     if (password !== confirm) {
-      setError('Passwords do not match.');
+      setError('These passwords do not match.');
       return;
     }
     setLoading(true);
@@ -60,7 +62,7 @@ function ResetPasswordContent() {
     const { error } = await supabase.auth.updateUser({ password });
     setLoading(false);
     if (error) {
-      setError("Let's try that again — something went wrong.");
+      setError(describeAuthError(error).message);
     } else {
       setDone(true);
       let count = 3;
@@ -127,7 +129,7 @@ function ResetPasswordContent() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 8 characters"
+                placeholder={`At least ${MIN_PASSWORD_LENGTH} characters`}
                 autoComplete="new-password"
                 className={inputClass}
                 disabled={!ready}
@@ -146,7 +148,7 @@ function ResetPasswordContent() {
               />
             </div>
 
-            {error && ready && <p className="text-error text-sm">{error}</p>}
+            {error && ready && <FormAlert>{error}</FormAlert>}
 
             <button
               type="submit"

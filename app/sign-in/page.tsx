@@ -7,6 +7,8 @@ import { supabase } from '@/lib/supabase';
 import { ensureProfile } from '@/lib/profile';
 import { Colors } from '@/constants/theme';
 import { PrivacyNotice } from '@/components/PrivacyNotice';
+import { FormAlert } from '@/components/FormAlert';
+import { describeAuthError } from '@/lib/auth-errors';
 
 export default function SignInPage() {
   const router = useRouter();
@@ -14,22 +16,41 @@ export default function SignInPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
+  const [resendState, setResendState] = useState<'idle' | 'sending' | 'sent'>('idle');
+
+  async function handleResendConfirmation() {
+    setResendState('sending');
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: email.trim().toLowerCase(),
+    });
+    if (error) {
+      setResendState('idle');
+      setError(describeAuthError(error).message);
+    } else {
+      setResendState('sent');
+    }
+  }
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim() || !password) {
-      setError('Please fill in all fields.');
+      setError(!email.trim() ? 'Please enter your email address.' : 'Please enter your password.');
       return;
     }
     setLoading(true);
     setError('');
+    setNeedsConfirmation(false);
     const { error } = await supabase.auth.signInWithPassword({
       email: email.trim().toLowerCase(),
       password,
     });
     if (error) {
       setLoading(false);
-      setError("Let's try that again — please check your email and password.");
+      const info = describeAuthError(error);
+      setError(info.message);
+      setNeedsConfirmation(!!info.canResendConfirmation);
     } else {
       // Backfill the profile row for anyone who registered before it was
       // created reliably (no-op once the row exists).
@@ -105,7 +126,31 @@ export default function SignInPage() {
             </Link>
           </div>
 
-          {error && <p className="text-error text-sm">{error}</p>}
+          {error && (
+            <FormAlert
+              action={
+                needsConfirmation && resendState !== 'sent' ? (
+                  <button
+                    type="button"
+                    onClick={handleResendConfirmation}
+                    disabled={resendState === 'sending'}
+                    className="font-semibold underline underline-offset-2 hover:opacity-70 transition-opacity disabled:opacity-50"
+                  >
+                    {resendState === 'sending' ? 'Sending…' : 'Send the link again'}
+                  </button>
+                ) : undefined
+              }
+            >
+              {error}
+            </FormAlert>
+          )}
+
+          {resendState === 'sent' && (
+            <FormAlert tone="success">
+              Confirmation link sent — check your inbox at{' '}
+              <span className="font-semibold">{email.trim().toLowerCase()}</span>.
+            </FormAlert>
+          )}
 
           <button
             type="submit"
