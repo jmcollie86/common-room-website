@@ -43,3 +43,7 @@ next-env.d.ts
 CLAUDE.md
 AGENTS.md
 /memory
+
+# local one-off scripts and DB backups (not part of the app)
+/scripts
+/backups
